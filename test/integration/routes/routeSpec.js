@@ -65,6 +65,15 @@ describe('INTEGRATION Route', function () {
     server.ready(done);
   });
 
+  after(function(done) {
+    if (app) {
+      // Shutdown the app
+      app.close( done );
+    } else {
+      done();
+    }
+  });
+
   describe( 'GET #/test', function() {
     it('should return the static test response', function (done) {
       request(url)

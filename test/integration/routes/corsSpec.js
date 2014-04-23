@@ -7,7 +7,7 @@ var server = require('../../lib/server.js')
   , expect = chai.expect
   ;
 
-describe( 'CORS', function() {
+describe( 'INTEGRATION CORS', function() {
 
   before( function (done) {
     server.ready(done);
