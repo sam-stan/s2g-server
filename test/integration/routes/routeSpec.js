@@ -1,4 +1,3 @@
-// # Integration tests
 'use strict';
 
 // 
@@ -16,17 +15,15 @@
 // that endpoint.  Use this configuration to do deployment validation
 // and acceptance testing.
 
-var path = require('path')
-  , chai = require('chai')
+var chai = require('chai')
   , should = chai.should()
   , expect = chai.expect
   , request = require('supertest') 
   , conf = require('../../../app/config')
   , logger = require('../../../app/logging').logger
   , api_assertions = require('../../lib/apiJsonChai')
-  , utils = require('../../lib/utils')
-  , cluster = require('cluster')
   , mongoose = require('mongoose')
+  , server = require('../../lib/server.js')
   ;
 
 chai.use( api_assertions );
@@ -59,105 +56,13 @@ chai.use( api_assertions );
 // one of INTEGRATION or UNIT.
 describe('INTEGRATION Route', function () {
 
-  var url, app;
+  var url = server.url
+    , app = server.app
+    ;
+
 
   before(function (done) {
-
-    // Set 'url' and start app if no testing endpoint provided.
-    if ( process.env.TEST_URL ) {
-
-      // INIT MONGO
-      mongoose.connect(conf.get('mongo.db'));
-      mongoose.connection.on('error', function(err) {
-        logger.error('Mongoose connection error: %s', err);
-      });
-      mongoose.connection.on('open', function(err) {
-        logger.info('Mongoose connection opened.');
-      });
-
-      url = process.env.TEST_URL;
-      // let's increase the timeout of this setup
-      // to account for possible spin-up cost on the 
-      // hosting platform.
-      var timeout = 10000;
-      this.timeout(timeout);
-      // 0 timeout, we want to wake-it up now.
-      logger.info('Waking up end-point (%dms): %s', timeout, url);
-      utils.wakeUp(url, done, 0);
-    } else if ( conf.get('server.cluster') ) {
-      logger.fatal('Configuration for server.cluster must be "false" for local integration tests');
-      logger.info('Try CLUSTER=false as environment variable');
-      // clustered configurations are not supported
-      // in local server mode.
-      expect(conf.get('server.cluster')).to.be.false;
-    } else {
-      this.timeout(10000);
-      var port = conf.get('server.port');
-      url = 'http://localhost:' + port;
-      app = utils.createInProcessApplication(url, done);
-    }
-    logger.info( 'MongoDb: %s', conf.get('mongo.db'));
-  });
-
-  after(function(done) {
-    if (app) {
-      // Shutdown the app
-      app.close( done );
-    } else {
-      done();
-    }
-  });
-
-  // it.only('should return 201 when a document is saved', function (done) {
-  //   request(url)
-  //     .put('/users/tyler@durden.lan'  )
-  //     // .set('Authorization', 'Bearer ' + token)
-  //     .set('Accept', 'application/json')
-  //     .set('Content-Type', 'application/json')
-  //     .send({
-  //       firstName: 'Tyler',
-  //       lastName: 'Durden',
-  //       address: '1537 Paper Street, Bradford DE 19808',
-  //       avatar: 'http://www.thedentedhelmet.com/uploads/avatars/avatar14_15.gif'
-  //     })
-  //     // .expect('Content-Type', 'application/json')
-  //     .expect(201)
-  //     .end(done);
-  // });
-
-  describe( 'CORS', function() {
-    describe( 'Access-Control-Allow-Origin', function () {
-      it('should be set to the origin header of the request', function (done) {
-        request(url)
-          .get('/version')
-          .set('Origin', '*')
-          .expect('Access-Control-Allow-Origin', '*')
-          .expect(200, done);
-      });
-      it('should not include it when no origin is specified', function (done) {
-        request(url)
-          .get('/version')
-          .expect(200)
-          .end(function(err,res) {
-            if (err) return done(err);
-            expect(res.headers['access-control-allow-origin']).to.be.undefined;
-            return done();
-          });
-      });
-    });
-    describe( 'Pre-flight requests', function () {
-      it('should return all expected headers', function (done) { 
-        request(url)
-          .options('/token')
-          .set('Origin', '*')
-          .set('Access-Control-Request-Method', 'POST')
-          .expect('Access-Control-Allow-Origin', '*')
-          .expect('Access-Control-Allow-Methods', 'POST')
-          .expect('Access-Control-Max-Age', '3600')
-          .expect('Access-Control-Allow-Headers', 'accept, accept-version, content-type, request-id, origin, x-api-version, x-request-id, authorization')
-          .expect(200, done);
-      });
-    });
+    server.ready(done);
   });
 
   describe( 'GET #/test', function() {
