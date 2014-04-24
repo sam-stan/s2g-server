@@ -56,7 +56,8 @@
     "sinon-chai": "^2.5.0",
     "mongoose-mock": "git://github.com/sebmartel/mongoose-mock.git",
     "proxyquire": "^0.5.3",
-    "grunt-env": "^0.4.1"
+    "grunt-env": "^0.4.1",
+    "q": "^1.0.1"
   },
   "engine": {
     "node": "0.10.x"
