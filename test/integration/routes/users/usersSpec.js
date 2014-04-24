@@ -72,6 +72,15 @@ describe( 'INTEGRATION #/users', function() {
       avatar: 'http://www.thedentedhelmet.com/uploads/avatars/avatar14_15.gif'
     };
 
+    after( function() {
+      // tidy up and delete the test account.
+      User.remove( {username: account.username } , function(err) {
+        if (err) {
+          logger.warn( 'Failed to remove the users created during these tests: ' + err);
+        }
+      });
+    });    
+
     it('should only let owning user account update the profile', function(done) {
       request(url)
         .put('/users/wrongUser' + Math.random() )
