@@ -146,4 +146,10 @@ describe( 'INTEGRATION #/users', function() {
     });
   });
 
+  describe('PUT #/users/:username/address', function () {
+    
+  });
+
+
+
 });

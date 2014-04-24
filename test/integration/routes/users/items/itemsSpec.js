@@ -26,16 +26,7 @@ describe( 'INTEGRATION #/users/:username/items', function() {
   });
 
   after( function (done) {
-    account.deleteAccount()
-    // .then( function () {
-    //   if (server.app) {
-    //     server.app.close( done );
-    //     // done();
-    //   } else {
-    //     done();
-    //   }
-    // });
-    .then(done);
+    account.deleteAccount().then(done);
   });
 
   describe('GET #/users/:username/items', function () {
@@ -214,4 +205,18 @@ describe( 'INTEGRATION #/users/:username/items', function() {
     });  // GET #/users/:username/items/:item
 
   });  // PUT #/users/:username/items  
+
+  describe('PUT #/users/:username/items/:item/description', function () {
+
+  });
+
+  describe('PUT #/users/:username/items/:item/terms', function () {
+
+  });
+
+  describe('DELETE #/users/:username/items/:item', function () {
+
+  });
+
+
 });

@@ -9,13 +9,13 @@ var server = require('../../lib/server.js')
   , mongoose = require('mongoose')
   ;
 
-describe( 'INTEGRATION #/accounts', function() {
+describe( 'INTEGRATION #/accounts', function () {
 
   before( function (done) {
     server.ready(done);
   });
 
-  describe( 'POST #/accounts', function() {
+  describe( 'POST #/accounts', function () {
 
     require('../../../app/models/account');
     var Account = mongoose.model('Account');
@@ -102,4 +102,13 @@ describe( 'INTEGRATION #/accounts', function() {
       });
     });
   });
+
+  describe( 'GET #/accounts', function () {
+
+  });
+
+  describe( 'PUT #/accounts/:username/facebookId', function () {
+
+  });
+  
 });

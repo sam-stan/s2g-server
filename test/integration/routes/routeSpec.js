@@ -112,25 +112,6 @@ describe('INTEGRATION Route', function () {
             });
     });
   });
-
-  describe( 'GET #/neighborhoods', function() {
-    it('should return the route response', function (done) {
-      request(url)
-            .get('/neighborhoods')
-            .set('Accept', 'application/json')
-            .expect('Content-Type', 'application/json')
-            .expect(200)
-            .end(function (err, res) {
-              if (err) return done(err);
-              res.body.should.exist.and.be.an.apiResponseJSON('success');
-              res.body.should.have.a.property('data').that.is.an('array');
-              for (var i = res.body.data.length - 1; i >= 0; i--) {
-                res.body.data[i].should.be.a.neighborhoodJSON;
-              }
-              return done();
-            });
-    });
-  });
-
+  
 });  // INTEGRATION
 
