@@ -201,28 +201,6 @@ describe('INTEGRATION Route', function () {
         });
       });          
 
-      describe('GET #/users/:username who doesn\'t exist', function () {
-
-        it('should require authentication', function (done) {
-          request(url)
-            .get('/users/testUser')
-            .set('Accept', 'application/json')
-            .expect('Content-Type', 'application/json')
-            .expect(401)
-            .end(done);
-        });
-
-        it('should return a 404', function (done) {
-          request(url)
-            .get('/users/testUser')
-            .set('Authorization', 'Bearer ' + token)
-            .set('Accept', 'application/json')
-            .expect('Content-Type', 'application/json')
-            .expect(404)
-            .end(done);
-        });
-      }); // GET #/users/:username
-
       describe('PUT #/users/:username', function() {
 
         require('../../../app/models/oauth2token');
@@ -275,86 +253,86 @@ describe('INTEGRATION Route', function () {
           });
         });
 
-        it('should require authentication', function (done) {
-          request(url)
-            .put('/users/' + testUser)
-            .set('Accept', 'application/json')
-            .expect('Content-Type', 'application/json')
-            .expect(401)
-            .end(done);
-        });
+        // it('should require authentication', function (done) {
+        //   request(url)
+        //     .put('/users/' + testUser)
+        //     .set('Accept', 'application/json')
+        //     .expect('Content-Type', 'application/json')
+        //     .expect(401)
+        //     .end(done);
+        // });
 
-        it('should only let owning user account update the profile', function(done) {
-          request(url)
-            .put('/users/wrongUser' + Math.random() )
-            .set('Authorization', 'Bearer ' + token)
-            .set('Content-Type', 'application/json')
-            .send(tylerDurden)
-            .expect(401)
-            .end(done);
-        });
+        // it('should only let owning user account update the profile', function(done) {
+        //   request(url)
+        //     .put('/users/wrongUser' + Math.random() )
+        //     .set('Authorization', 'Bearer ' + token)
+        //     .set('Content-Type', 'application/json')
+        //     .send(tylerDurden)
+        //     .expect(401)
+        //     .end(done);
+        // });
 
-        it('should return 201 when a document is saved', function (done) {
-          request(url)
-            .put('/users/' + testUser )
-            .set('Authorization', 'Bearer ' + token)
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .send(tylerDurden)
-            .expect(201)
-            .end(done);
-        });
+        // it('should return 201 when a document is saved', function (done) {
+        //   request(url)
+        //     .put('/users/' + testUser )
+        //     .set('Authorization', 'Bearer ' + token)
+        //     .set('Accept', 'application/json')
+        //     .set('Content-Type', 'application/json')
+        //     .send(tylerDurden)
+        //     .expect(201)
+        //     .end(done);
+        // });
 
-        it('should allow successive updates', function (done) {
-          // first one (should do an updated if previous test was ran.)
-          request(url)
-            .put('/users/' + testUser )
-            .set('Authorization', 'Bearer ' + token)
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .send(tylerDurden)
-            .expect(201)
-            .end( function () {
-              // second one.
-              request(url)
-                .put('/users/' + testUser )
-                .set('Authorization', 'Bearer ' + token)
-                .set('Accept', 'application/json')
-                .set('Content-Type', 'application/json')
-                .send(JSON.stringify({
-                  firstName: 'Tyler',
-                  lastName: 'Durden',
-                  address: '1537 Paper Street, Bradford DE 19808',
-                  avatar: 'http://www.thedentedhelmet.com/uploads/avatars/avatar14_15.gif'
-                }))
-                .expect(201)
-                .end(done);
-            }); 
-        });
+        // it('should allow successive updates', function (done) {
+        //   // first one (should do an updated if previous test was ran.)
+        //   request(url)
+        //     .put('/users/' + testUser )
+        //     .set('Authorization', 'Bearer ' + token)
+        //     .set('Accept', 'application/json')
+        //     .set('Content-Type', 'application/json')
+        //     .send(tylerDurden)
+        //     .expect(201)
+        //     .end( function () {
+        //       // second one.
+        //       request(url)
+        //         .put('/users/' + testUser )
+        //         .set('Authorization', 'Bearer ' + token)
+        //         .set('Accept', 'application/json')
+        //         .set('Content-Type', 'application/json')
+        //         .send(JSON.stringify({
+        //           firstName: 'Tyler',
+        //           lastName: 'Durden',
+        //           address: '1537 Paper Street, Bradford DE 19808',
+        //           avatar: 'http://www.thedentedhelmet.com/uploads/avatars/avatar14_15.gif'
+        //         }))
+        //         .expect(201)
+        //         .end(done);
+        //     }); 
+        // });
 
-        describe('GET #/users/:username', function () {
+        // describe('GET #/users/:username', function () {
 
-          before(function (done) {
-            request(url)
-              .put('/users/' + testUser )
-              .set('Authorization', 'Bearer ' + token)
-              .set('Accept', 'application/json')
-              .set('Content-Type', 'application/json')
-              .send( tylerDurden)
-              .expect(201)
-              .end(done);
-          });
+        //   before(function (done) {
+        //     request(url)
+        //       .put('/users/' + testUser )
+        //       .set('Authorization', 'Bearer ' + token)
+        //       .set('Accept', 'application/json')
+        //       .set('Content-Type', 'application/json')
+        //       .send( tylerDurden)
+        //       .expect(201)
+        //       .end(done);
+        //   });
 
-          it('should return an existing user', function (done) {
-            request(url)
-              .get('/users/' + testUser )
-              .set('Authorization', 'Bearer ' + token)
-              .set('Accept', 'application/json')
-              .set('Content-Type', 'application/json')
-              .expect(200)
-              .end(done);  
-          });
-        });
+        //   it('should return an existing user', function (done) {
+        //     request(url)
+        //       .get('/users/' + testUser )
+        //       .set('Authorization', 'Bearer ' + token)
+        //       .set('Accept', 'application/json')
+        //       .set('Content-Type', 'application/json')
+        //       .expect(200)
+        //       .end(done);  
+        //   });
+        // });
 
         describe('GET #/users/:username/items', function () {
 
