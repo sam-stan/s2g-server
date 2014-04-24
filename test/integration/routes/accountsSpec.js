@@ -107,8 +107,24 @@ describe( 'INTEGRATION #/accounts', function () {
 
   });
 
-  describe( 'PUT #/accounts/:username/facebookId', function () {
+  describe.skip( 'PUT #/accounts/:username/facebookId', function () {
 
   });
-  
+
+  describe.skip( 'POST #/accounts/:username/password?reset=sms', function () {
+
+  });
+
+  describe.skip( 'GET #/accounts/:username/fyp/:code', function () {
+
+  });
+
+  describe.skip( 'PUT #/accounts/:username/password', function () {
+
+  });
+
+  describe.skip( 'FYP: Forgot Your Password', function () {
+
+  });
+
 });

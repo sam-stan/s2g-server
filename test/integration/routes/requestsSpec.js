@@ -10,5 +10,9 @@ var server = require('../../lib/server.js')
   , accountFactory = require('../../lib/accountFactory.js')
   ;
 
-describe( 'INTEGRATION #/requests', function() {
+describe.skip( 'INTEGRATION #/requests', function() {
+  describe( 'POST #/requests', function () {
+
+  });
+
 });

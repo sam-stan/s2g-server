@@ -206,15 +206,15 @@ describe( 'INTEGRATION #/users/:username/items', function() {
 
   });  // PUT #/users/:username/items  
 
-  describe('PUT #/users/:username/items/:item/description', function () {
+  describe.skip('PUT #/users/:username/items/:item/description', function () {
 
   });
 
-  describe('PUT #/users/:username/items/:item/terms', function () {
+  describe.skip('PUT #/users/:username/items/:item/terms', function () {
 
   });
 
-  describe('DELETE #/users/:username/items/:item', function () {
+  describe.skip('DELETE #/users/:username/items/:item', function () {
 
   });
 

@@ -31,19 +31,19 @@ describe( 'INTEGRATION #/neighborhoods', function() {
     });
   });
 
-  describe( 'GET #/neighborhoods?address=:address', function () {
+  describe.skip( 'GET #/neighborhoods?address=:address', function () {
 
   });
 
-  describe( 'GET #/neighborhoods/:neighborhood/items', function () {
+  describe.skip( 'GET #/neighborhoods/:neighborhood/items', function () {
 
   });
 
-  describe( 'GET #/neighborhoods/:neighborhood/items/:item', function () {
+  describe.skip( 'GET #/neighborhoods/:neighborhood/items/:item', function () {
 
   });
 
-  describe( 'GET #/neighborhoods/:neighborhood/statistics', function () {
+  describe.skip( 'GET #/neighborhoods/:neighborhood/statistics', function () {
 
   });
 
