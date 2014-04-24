@@ -26,15 +26,7 @@ describe( 'INTEGRATION #/users', function() {
   });
 
   after( function (done) {
-    account.deleteAccount()
-    .then( function () {
-      if (server.app) {
-        server.app.close( done );
-        // done();
-      } else {
-        done();
-      }
-    });
+    account.deleteAccount().then(done);
   });
 
   describe('GET #/users/:username who doesn\'t exist', function () {

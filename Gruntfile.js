@@ -16,6 +16,12 @@ module.exports = function(grunt) {
         NODE_ENV: grunt.option('env') || 'test',
         PORT: 8124
       },
+      // watch2 configuration is for istanbul coverage to avoid any issues
+      // with port conflicts from the mocha run to the istanbul run.
+      watch2: {
+        NODE_ENV: grunt.option('env') || 'test',
+        PORT: 8125
+      },
       dev: {
         NODE_ENV: grunt.option('env') || 'test',
         PORT: ''
@@ -83,11 +89,11 @@ module.exports = function(grunt) {
     watch: {
       jshint: {
         files: ['main.js', 'app/**/*.js', '.jshintrc'],
-        tasks: ['env:watch', 'jshint:sources', 'mochaTest', 'mocha_istanbul', 'env:dev', 'forever:server:restart']
+        tasks: ['env:watch', 'jshint:sources', 'mochaTest', 'env:watch2','mocha_istanbul', 'env:dev', 'forever:server:restart']
       },
       jshintTest: { // test updates don't require a server restart.
         files: ['test/**/*.js', 'test/.jshintrc'],
-        tasks: ['env:watch', 'jshint:tests', 'mochaTest', 'mocha_istanbul']
+        tasks: ['env:watch', 'jshint:tests', 'mochaTest', 'env:watch2','mocha_istanbul']
       },
       grunt: {
         files: ['Gruntfile.js'],
