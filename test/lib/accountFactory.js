@@ -43,6 +43,7 @@ exports.createAccount = function (url) {
   .post('/accounts')
   .query( {email: account.username} )
   .query( {password: account.password} )
+  .query( {neighborhood: mongoose.Types.ObjectId().toString()})
   .set('Accept', 'application/json')
   .expect(200)
   .end( function () { 

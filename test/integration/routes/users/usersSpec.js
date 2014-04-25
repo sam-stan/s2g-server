@@ -19,7 +19,6 @@ describe( 'INTEGRATION #/users', function() {
       accountFactory.createAuthenticatedAccount(url)
       .then( function (result) {
         account = result;
-        console.log(account);
         done();
       });
     });

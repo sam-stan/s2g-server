@@ -25,6 +25,7 @@ describe( 'INTEGRATION #/accounts', function () {
       .post('/accounts')
       .query( {email: Math.random() + '@share2give.lan'} )
       .query( {password: 'a wonderful day'})
+      .query( {neighborhood: mongoose.Types.ObjectId().toString()})
       .set('Accept', 'application/json')
       .expect('Content-Type', 'application/json')
       .expect(200)
@@ -41,6 +42,7 @@ describe( 'INTEGRATION #/accounts', function () {
       .post('/accounts')
       .send( {email: Math.random() + '@share2give.lan'} )
       .send( {password: 'a wonderful day'})
+      .send( {neighborhood: mongoose.Types.ObjectId().toString()})
       .set('Accept', 'application/json')
       .expect('Content-Type', 'application/json')
       .expect(200)
@@ -52,46 +54,6 @@ describe( 'INTEGRATION #/accounts', function () {
       });
     });
 
-    it('400 with email only', function(done) {
-      request(url)
-        .post('/accounts')
-        .query( {email: Math.random() + '@share2give.lan'} )
-        .set('Accept', 'application/json')
-        .expect('Content-Type', 'application/json')
-        .expect(400)
-        .end(done);
-    });
-
-    it('400 with invalid email string', function(done) {
-      request(url)
-        .post('/accounts')
-        .query( {email: Math.random() + 'share2give-lan'} )
-        .query( {password: 'a wonderful day'})
-        .set('Accept', 'application/json')
-        .expect('Content-Type', 'application/json')
-        .expect(400)
-        .end(done);
-    });
-
-    it('400 with password only', function(done) {
-      request(url)
-        .post('/accounts')
-        .query( {password: 'a wonderful day'})
-        .set('Accept', 'application/json')
-        .expect('Content-Type', 'application/json')
-        .expect(400)
-        .end(done);
-    });
-
-    it('400 with no arguments', function(done) {
-      request(url)
-        .post('/accounts')
-        .set('Accept', 'application/json')
-        .expect('Content-Type', 'application/json')
-        .expect(400)
-        .end(done); 
-    });
-    
     after( function() {
       console.log('expecting to delete /@share2give.lan/i');
       // tidy up and delete the test account.

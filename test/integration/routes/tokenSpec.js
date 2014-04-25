@@ -40,6 +40,7 @@ describe( 'INTEGRATION #/token', function() {
         .post('/accounts')
         .query( {email: testUser = Math.random() + '@share2give.lan'} )
         .query( {password: testPassword })
+        .query( {neighborhood: mongoose.Types.ObjectId().toString()})
         .set('Accept', 'application/json')
         .expect('Content-Type', 'application/json')
         .expect(200)

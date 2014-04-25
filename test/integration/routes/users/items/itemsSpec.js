@@ -19,13 +19,13 @@ describe( 'INTEGRATION #/users/:username/items', function() {
       accountFactory.createAuthenticatedAccount(url)
       .then( function (result) {
         account = result;
-        console.log(account);
         done();
       });
     });
   });
 
   after( function (done) {
+    // done();
     account.deleteAccount().then(done);
   });
 

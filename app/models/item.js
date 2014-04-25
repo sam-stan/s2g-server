@@ -4,13 +4,15 @@ var mongoose = require('mongoose')
   , Schema = mongoose.Schema
   , logger = require('../logging').logger
   , validator = require('validator')
+  , ObjectId = mongoose.Schema.Types.ObjectId
   ;
 
 var Item = new Schema({
-  email: { type: String, required: true, unique: true, index: true, trim: true},
+  _owner: { type: ObjectId, ref: 'Account', required: true, index: true},
+  _neighborhood: { type: ObjectId, ref: 'Neighborhood', required: true, index: true},
   name: { type: String, required: true, trim: true},
   description: { type: String },
-  picture: String,
+  picture: String
 });
 
 Item.path('picture').validate( function (url) {
@@ -20,7 +22,5 @@ Item.path('picture').validate( function (url) {
     require_protocol: true
   });
 });
-
-Item.path('email').validate( validator.isEmail );
 
 module.exports = mongoose.model('Item', Item);

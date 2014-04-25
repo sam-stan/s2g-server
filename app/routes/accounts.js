@@ -16,7 +16,8 @@ module.exports = function(server) {
       }, 
       validation: {
         email: { isRequired: true, isEmail: true, scope: 'query', description: 'Your email for login.'},
-        password: { isRequired: true, scope: 'query', description: 'A new password for your account.'}
+        password: { isRequired: true, scope: 'query', description: 'A new password for your account.'},
+        neighborhood: { isRequired: true, scope: 'query', description: 'Neighborhood id of the user.'}
       }
     },[
       restify.queryParser(),
