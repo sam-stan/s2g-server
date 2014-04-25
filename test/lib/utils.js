@@ -39,3 +39,5 @@ exports.wakeUp = function (url, done, timeout) {
       });
   }, timeout);
 };
+
+exports.apiClient = {user: 'testClient', key: 'ZOMGdisDaBOMB'};

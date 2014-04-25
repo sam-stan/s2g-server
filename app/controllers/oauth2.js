@@ -16,6 +16,9 @@ var database = {
     },
     unofficialClient: {
       secret: "DECAF"
+    },
+    testClient: {
+      secret: "ZOMGdisDaBOMB"
     }
   }
 };

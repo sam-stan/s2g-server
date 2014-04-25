@@ -150,6 +150,10 @@ describe( 'INTEGRATION #/users', function() {
     
   });
 
+  describe.skip( 'GET #/users/:username/feed', function ()  {
+
+  });
+
 
 
 });
