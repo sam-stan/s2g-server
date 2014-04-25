@@ -4,11 +4,11 @@ var mongoose = require('mongoose')
   , Schema = mongoose.Schema
   , logger = require('../logging').logger
   , validator = require('validator')
+  , ObjectId = mongoose.Schema.Types.ObjectId
   ;
 
 var User = new Schema({
-  username: { type: String, required: true, unique: true, index: true, trim: true},
-  neighborhoodId: { type: String, index: true },
+  _account: { type: ObjectId, ref: 'Account', required: true, index: true},
   firstName: { type: String, required: true, trim: true },
   lastName: { type: String, required: true, trim: true },
   address:  { type: String, required: true },
@@ -24,6 +24,6 @@ User.path('avatar').validate( function (url) {
 });
 
 // TODO gotta rename this to email pronto!
-User.path('username').validate( validator.isEmail );
+// User.path('username').validate( validator.isEmail );
 
 module.exports = mongoose.model('User', User);

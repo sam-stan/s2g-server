@@ -28,33 +28,53 @@ exports.get = function(req,res,next) {
 }; 
 
 exports.put = function (req,res,next) {
-  // logger.debug('#users.put');
-  var user = new User({
-    username: req.params.username,
-    neighborhoodId: req.params.neighborhoodId,
-    firstName: req.params.firstName,
-    lastName: req.params.lastName,
-    address: req.params.address,
-    avatar: req.params.avatar
-  });
 
-  // Remove the _id property from the json object
-  // because it cannot be used with an upsert.
-  var update = user.toObject();
-  delete update._id;
-  
-  User.update( {username: req.params.username}, update, {upsert: true},
-    function (err) {
+  Account.find( {email: req.params.username} ).exec( function (err,d) {
     if (err) {
-      logger.error('Failed to save user %s: %s', req.params.username, err);
-      res.send(500,{
+      logger.error(err);
+      res.send(500, {
         status: 'error',
         message: err
       });
       return next();
     }
-    res.send(201);
-    return next();
+    if ( d.length !== 1) {
+      logger.error('user %s not found', req.params.email);
+      res.send(400, {
+        status: 'error',
+        message: 'user ' + req.params.email + ' not found'
+      });
+      return next();
+    }    
+
+    // logger.debug('#users.put');
+    var user = new User({
+      _account: d[0]._id,
+      firstName: req.params.firstName,
+      lastName: req.params.lastName,
+      address: req.params.address,
+      avatar: req.params.avatar
+    });
+
+    // Remove the _id property from the json object
+    // because it cannot be used with an upsert.
+    var update = user.toObject();
+    delete update._id;
+    
+    User.update( {username: req.params.username}, update, {upsert: true},
+      function (err) {
+      if (err) {
+        logger.error('Failed to save user %s: %s', req.params.username, err);
+        res.send(500,{
+          status: 'error',
+          message: err
+        });
+        return next();
+      }
+      res.send(201);
+      return next();
+    });
+
   });
 };
 
