@@ -53,24 +53,12 @@ describe( 'INTEGRATION #/users', function() {
 
   describe('PUT #/users/:username', function() {
 
-    require('../../../../app/models/user');
-    var User = mongoose.model('User');
-
     var tylerDurden = {
       firstName: 'Tyler',
       lastName: 'Durden',
       address: '1537 Paper Street, Bradford DE 19808',
       avatar: 'http://www.thedentedhelmet.com/uploads/avatars/avatar14_15.gif'
     };
-
-    after( function() {
-      // tidy up and delete the test account.
-      User.remove( {username: account.username } , function(err) {
-        if (err) {
-          logger.warn( 'Failed to remove the users created during these tests: ' + err);
-        }
-      });
-    });    
 
     it('should only let owning user account update the profile', function(done) {
       request(url)

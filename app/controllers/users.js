@@ -1,7 +1,6 @@
 'use strict';
 
 var mongoose = require('mongoose')
-  , User = mongoose.model('User')
   , Item = mongoose.model('Item')
   , Account = mongoose.model('Account')
   , logger = require('../logging').logger
@@ -9,7 +8,7 @@ var mongoose = require('mongoose')
 
 exports.get = function(req,res,next) {
   // logger.debug('#users.get');
-  User.find( {username: req.params.username} ).exec( function (err, d) {
+  Account.find( {email: req.params.username} ).exec( function (err, d) {
     if (err) {
       // res.status(500);
       res.send(500, { status: 'error', message: err } );
@@ -48,20 +47,14 @@ exports.put = function (req,res,next) {
     }    
 
     // logger.debug('#users.put');
-    var user = new User({
-      _account: d[0]._id,
+    var update = {
       firstName: req.params.firstName,
       lastName: req.params.lastName,
       address: req.params.address,
       avatar: req.params.avatar
-    });
-
-    // Remove the _id property from the json object
-    // because it cannot be used with an upsert.
-    var update = user.toObject();
-    delete update._id;
+    };
     
-    User.update( {username: req.params.username}, update, {upsert: true},
+    Account.update( {email: req.params.username}, update, {upsert: true},
       function (err) {
       if (err) {
         logger.error('Failed to save user %s: %s', req.params.username, err);
