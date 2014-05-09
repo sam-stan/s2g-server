@@ -7,7 +7,7 @@ var conf = convict({
     doc: 'The application environment.',
     format: ['production', 'development', 'test', 'heroku'],
     default: 'test',
-    env: 'test'
+    env: 'NODE_ENV'
   },
   server: {
     port: {

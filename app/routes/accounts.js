@@ -25,4 +25,48 @@ module.exports = function(server) {
       restifyValidation.validationPlugin({errorsAsArray: false}),
     ],
     accounts.create);
+
+      // Get a user
+  server.get({
+      url: '/accounts/:username',
+      swagger: {
+        summary: 'Get the user profile',
+        notes: 'Returns profile information',
+        nickname: 'getUser'        
+      },
+      validation: {
+        // email: { isRequired: true, isEmail: true, scope: 'query', description: 'Your email for login.'},
+        // password: { isRequired: true, scope: 'query', description: 'A new password for your account.'}
+      }
+    },[  // middleware
+      restify.bodyParser(),
+      restifyValidation.validationPlugin({errorsAsArray: false})
+    ], 
+    function (req, res, next) {
+      if (!req.username) {
+        return res.sendUnauthenticated();
+      }
+      return accounts.get(req, res, next);
+    });
+
+  // Save a user
+  server.put({
+      url: '/accounts/:username',
+      swagger: {
+        summary: 'Add or update a User',
+        notes: '',
+        nickname: 'updateUser'              
+      },
+      validation: {}
+    },[ // middleware
+      restify.queryParser(),
+      restify.bodyParser(),
+      restifyValidation.validationPlugin({errorsAsArray: false})
+    ],
+    function (req, res, next) {
+      if (!req.username || req.username !== req.params.username) {
+        return res.sendUnauthenticated();
+      }
+      return accounts.put(req, res, next);
+    });
 };

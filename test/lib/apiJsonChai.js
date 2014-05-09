@@ -56,6 +56,13 @@ module.exports = function(chai, utils) {
     expect(detail, 'accountDetailJSON').to.have.property('email').that.is.an.email;
   });
 
+  Assertion.addProperty('userDetailJSON', function() {
+    var detail = this._obj;
+    expect(detail, 'userDetailJSON').to.have.property('firstName').that.is.a('string');
+    expect(detail, 'userDetailJSON').to.have.property('lastName').that.is.a('string');
+    expect(detail, 'userDetailJSON').to.have.property('address').that.is.a('string');
+  });
+
   Assertion.addProperty('oauthAccessTokenResponseJSON', function () {
     var token = this._obj;
     expect(token, 'oauth2Response').to.be.an('object');
