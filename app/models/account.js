@@ -36,10 +36,23 @@ var Account = new Schema({
   _neighborhood: { type: ObjectId, ref: 'Neighborhood', required: true, index: true},
   passwordHash: { type: String, required: true },
   salt: String,
-  accessTokens: [String]
-} );
+  accessTokens: [String],
+  // merged from User model
+  firstName: { type: String, trim: true },
+  lastName: { type: String, trim: true },
+  address:  { type: String },
+  avatar: String,
+});
 
 Account.path('email').validate( validator.isEmail );
+
+Account.path('avatar').validate( function (url) {
+  return validator.isURL( url, {
+    protocols: ['http', 'https'],
+    require_tld: true,
+    require_protocol: true
+  });
+});
 
 // Account.statics.hashPassword = function(password) {
 //   var hash = null;
