@@ -3,7 +3,7 @@
 var mongoose = require('mongoose')
   , Item = mongoose.model('Item')
   , Account = mongoose.model('Account')
-  , logger = require('../logging').logger
+  , logger = require('../../logging').logger
   ;
 
 // create a 24 character hex string

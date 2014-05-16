@@ -11,4 +11,5 @@ var Category = new Schema({
   parents: [ { type: ObjectId, ref: 'Category' } ]// Or related?
 });
 
+mongoose.model('Category', Category);
 module.exports = Category;

@@ -2,9 +2,8 @@
 
 var restify = require('restify')
   , restifyValidation = require('node-restify-validation')
-  // , accounts = require('../controllers/accounts' )
-  , users = require('../controllers/users')
-  , logger = require('../logging').logger
+  , questions = require('../../controllers/users/questions')
+  , logger = require('../../logging').logger
   ;
 
 module.exports = function(server) {
@@ -12,7 +11,7 @@ module.exports = function(server) {
   var plugins = [ restify.bodyParser(),
     restifyValidation.validationPlugin({errorsAsArray: false})
   ];
-
+/*
   // Save an item
   server.put({
     url: '/users/:email/items/:id',
@@ -60,14 +59,14 @@ module.exports = function(server) {
     }
     return users.getItems(req, res, next);
   });
-
-  // Get 1 item
+*/
+  // Get 1 question
   server.get({
-    url: '/users/:email/items/:id',
+    url: '/users/:email/questions/:id',
     swagger: {
-      summary: 'Get all a specific item for the user',
-      notes: 'Returns a 404 if the item or user doesn\'t exist',
-      nickname: 'getUserItem'
+      summary: 'Get a specific question for the user',
+      notes: 'Returns a 404 if the question or user doesn\'t exist',
+      nickname: 'getUserQuestion'
     },
     validation: {
       email: { isRequired: true, isEmail: true, scope: 'path', description: 'Your email for login.'},
@@ -81,8 +80,7 @@ module.exports = function(server) {
     if (!req.username || req.username !== req.params.email) {
       return res.sendUnauthenticated();
     }
-    return users.getItem(req, res, next);
+    return questions.getQuestion(req, res, next);
   });  
 
 };
-

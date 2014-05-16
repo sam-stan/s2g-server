@@ -14,4 +14,5 @@ var Question = new Schema({
   response: Boolean
 });
 
+mongoose.model('Question', Question);
 module.exports = Question;
