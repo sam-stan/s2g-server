@@ -70,4 +70,13 @@ module.exports = function(chai, utils) {
     expect(token, 'oauth2Response').to.have.property('token_type').that.equals('Bearer');
   });
 
+  Assertion.addProperty('userPreferencesJSON', function() {
+    var preferences = this._obj;
+    console.log('\n\n\n' + JSON.stringify(preferences) + '\n\n\n');
+    expect(preferences, 'userPreferencesJSON').to.be.an('object');
+    expect(preferences, 'userPreferencesJSON').to.have.property('categories').that.is.an.instanceOf(Array);
+    expect(preferences, 'userPreferencesJSON').to.have.property('samples').that.is.an.instanceOf(Array);
+    expect(preferences, 'userPreferencesJSON').to.have.property('lastUpdated').that.is.a('string');
+  });
+
 };

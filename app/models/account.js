@@ -6,7 +6,6 @@ var mongoose = require('mongoose')
   , validator = require('validator')
   , logger = require('../logging').logger
   , ObjectId = mongoose.Schema.Types.ObjectId
-  , Preferences = require('./preferences')
   ;
 
 /** Options: 
@@ -43,7 +42,7 @@ var Account = new Schema({
   lastName: { type: String, trim: true },
   address:  { type: String },
   avatar: String,
-  //preferences: Preferences
+  preferences: { type: ObjectId, ref: 'Preferences' }
 });
 
 Account.path('email').validate( validator.isEmail );

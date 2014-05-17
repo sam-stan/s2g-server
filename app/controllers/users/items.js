@@ -4,6 +4,7 @@ var mongoose = require('mongoose')
   , Item = mongoose.model('Item')
   , Account = mongoose.model('Account')
   , logger = require('../../logging').logger
+  , checkAccountError = require('../../utilities').checkAccountError
   ;
 
 // create a 24 character hex string
@@ -16,23 +17,7 @@ exports.putItem = function (req, res, next) {
 
   // lookup the user to get the neighborhood and the account id.
   Account.find( {email: req.params.email} ).exec( function (err,d) {
-    if (err) {
-      logger.error(err);
-      res.send(500, {
-        status: 'error',
-        message: err
-      });
-      return next();
-    }
-
-    if ( d.length !== 1) {
-      logger.error('user %s not found', req.params.email);
-      res.send(400, {
-        status: 'error',
-        message: 'user ' + req.params.email + ' not found'
-      });
-      return next();
-    }
+    checkAccountError(err, d, req.params.email, res, next);
 
     var item = new Item({
       name: req.params.name,
@@ -69,11 +54,7 @@ exports.putItem = function (req, res, next) {
 
 exports.getItems = function (req, res, next) {
   Account.find( {email: req.params.email} ).exec( function (err, d) {
-    if (err) {
-      logger.error(err);
-      res.send(500, {status: 'error', message: err} );
-      return next();
-    }
+    checkAccountError(err, d, req.params.email, res, next);
 
     Item.find( {_owner: d[0]._id} ).exec( function (err,d) {
       console.log('item query finished');

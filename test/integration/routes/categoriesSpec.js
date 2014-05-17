@@ -7,9 +7,29 @@ var server = require('../../lib/server.js')
   , expect = chai.expect
   , logger = require('../../../app/logging').logger
   , mongoose = require('mongoose')
+  , Category = mongoose.model('Category')
   ;
 
   describe( 'INTEGRATION #/categories', function() {
+
+    before(function(done) {
+      var category = new Category({name: 'tools'});
+      category.save(function(err) {
+        if(err) done(err);
+        category = new Category({name: 'services'});
+        category.save(function(err) {
+          if(err) done(err);
+          done();
+        });
+      });
+    });
+
+    after(function(done) {
+      Category.remove({}, function(err) {
+        if(err) done(err);
+        done();
+      });
+    });
 
     describe('GET #/categories', function() {
 
@@ -22,7 +42,6 @@ var server = require('../../lib/server.js')
           .end(function(err, res) {
             if(err)
               return done(err);
-            console.log('\n\n\n' + JSON.stringify(res.body) + '\n\n\n');
             res.body.should.exist.and.be.an.apiResponseJSON('success');
             res.body.should.have.property('data').to.have.length.above(1);
             done();
