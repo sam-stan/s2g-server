@@ -11,33 +11,7 @@ module.exports = function(server) {
   var plugins = [ restify.bodyParser(),
     restifyValidation.validationPlugin({errorsAsArray: false})
   ];
-/*
-  // Save an item
-  server.put({
-    url: '/users/:email/questions/:id',
-    swagger: {
-      summary: 'Update a User',
-      notes: 'The item must have been created first using a post',
-      nickname: 'updateUserItem'
-    },
-    validation: {
-      email: { isRequired: true, isEmail: true, scope: 'path', description: 'Your email for login.'},
-      id: { isRequired: true, scope: 'path', regex: /^[0-9a-f]{1,24}$/, description: '24 digit hex unique identifier.'},
-      name: { isRequired: true, scope: 'query', description: 'A name for the item to list'},
-      description: { isRequired: true, scope: 'query', description: 'A short description of the item.'}
-    }
-  },[ // middleware
-    restify.queryParser(),
-    restify.bodyParser(),
-    restifyValidation.validationPlugin({errorsAsArray: false})
-  ],
-  function (req, res, next) {
-    if (!req.username || req.username !== req.params.email) {
-      return res.sendUnauthenticated();
-    }
-    return users.putItem(req, res, next);
-  });
-*/
+
   // Get all questions
   server.get({
     url: '/users/:email/questions',
