@@ -126,10 +126,10 @@ exports.getPreferencesCategories = function(req, res, next) {
       checkAccountError(err, data, req.params.email, res, next);
 
       if(!data[0].preferences) {
-        logger.error('preferences categories for %s not found', req.params.email);
+        logger.error('preferences for %s not found', req.params.email);
         res.send(400, {
           status: 'error',
-          message: 'user preferences categories ' + req.params.email + ' not found'
+          message: 'user preferences ' + req.params.email + ' not found'
         });
         return next();
       }

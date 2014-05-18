@@ -14,7 +14,7 @@ module.exports = function(server) {
 /*
   // Save an item
   server.put({
-    url: '/users/:email/items/:id',
+    url: '/users/:email/questions/:id',
     swagger: {
       summary: 'Update a User',
       notes: 'The item must have been created first using a post',
@@ -37,14 +37,14 @@ module.exports = function(server) {
     }
     return users.putItem(req, res, next);
   });
-
-  // Get all items
+*/
+  // Get all questions
   server.get({
-    url: '/users/:email/items',
+    url: '/users/:email/questions',
     swagger: {
-      summary: 'Get all items for a user',
-      notes: 'Returns a 200 with an empty array if there are no items',
-      nickname: 'getUserItems'
+      summary: 'Get all questions for a user',
+      notes: 'Returns a 200 with an empty array if there are no questions',
+      nickname: 'getUserQuestions'
     },
     validation: {
       email: { isRequired: true, isEmail: true, scope: 'path', description: 'Your email for login.'}
@@ -57,9 +57,9 @@ module.exports = function(server) {
     if (!req.username || req.username !== req.params.email) {
       return res.sendUnauthenticated();
     }
-    return users.getItems(req, res, next);
+    return questions.getQuestions(req, res, next);
   });
-*/
+
   // Get 1 question
   server.get({
     url: '/users/:email/questions/:id',
@@ -81,6 +81,30 @@ module.exports = function(server) {
       return res.sendUnauthenticated();
     }
     return questions.getQuestion(req, res, next);
+  }); 
+
+  // Update 1 question
+  server.put({
+    url: '/users/:email/questions/:id',
+    swagger: {
+      summary: 'Update a specific question for the user',
+      notes: 'Returns a 404 if the question or user doesn\'t exist',
+      nickname: 'getUserQuestion'
+    },
+    validation: {
+      email: { isRequired: true, isEmail: true, scope: 'path', description: 'Your email for login.'},
+      id: { isRequired: true, scope: 'path', regex: /^[0-9a-f]{1,24}$/, description: '24 digit hex unique identifier.'},      
+    }
+  },[
+    restify.queryParser(),
+    restify.bodyParser(),
+    restifyValidation.validationPlugin({errorsAsArray: false})
+  ],
+  function (req, res, next) {
+    if (!req.username || req.username !== req.params.email) {
+      return res.sendUnauthenticated();
+    }
+    return questions.putQuestion(req, res, next);
   });  
 
 };

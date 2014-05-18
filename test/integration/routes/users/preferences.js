@@ -56,7 +56,6 @@ describe('INTEGRATION #/users/:username/preferences', function() {
           res.body.should.have.property('data').that.is.a.userPreferencesJSON;
           // Save _id to remove later
           preferences_id = res.body.data._id;
-          console.log('\n\n\n' + preferences_id + '\n\n\n')
           done();
         });
     });
