@@ -25,4 +25,23 @@ module.exports = function(server) {
       restifyValidation.validationPlugin({errorsAsArray: false}),
     ],
     accounts.create);
+    
+// update fb
+  server.put({
+    url: '/accounts',
+    swagger: {
+      summary: 'Update User\'s FacebookId',
+      notes: 'The user must have been created first using a post',
+      nickname: 'updateUserFacebookId'
+    },
+    validation: {                
+      username: { isRequired: true, scope: 'query', description: 'Username is needed in order to update'},
+      facebookId: { isRequired: true, scope: 'query', description: 'facebookId is needed in order to update'}
+    }
+  },[ // middleware
+    restify.queryParser(),
+    restify.bodyParser(),
+    restifyValidation.validationPlugin({errorsAsArray: false})
+  ],
+  accounts.update); 
 };

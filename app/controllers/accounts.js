@@ -35,3 +35,40 @@ exports.create = function (req, res, next) {
     }
   });
 };
+
+exports.update = function (req, res, next) {
+  Account.findOne({
+   email:req.params.username
+    },function(err,data){
+    if(err){
+      console.log(err);
+      return next();
+    }else{
+        data.facebookId = req.params.facebookId;
+        console.log(data);
+        data.save(function(err){
+          try{
+            if(err){
+                console.log('error');
+                res.send(500,{
+                  status:'error',
+                  message:err
+                });
+            }else{
+               res.send({
+               status:'success',
+               data:{
+                 email:data.email,
+                 facebookId:data.facebookId,
+                 id:data.id
+               }
+                });
+              }
+          return next();
+          }catch (error) {
+              console.log(error);
+          }
+       });
+    }
+  });   
+};

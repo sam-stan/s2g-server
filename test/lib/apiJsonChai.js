@@ -49,11 +49,24 @@ module.exports = function(chai, utils) {
     expect(filter.test(this._obj)).to.be.true;
   });
 
+  Assertion.addProperty('facebookId', function() {
+    var filter = /[a-zA-Z0-9.]*/;
+    expect(filter.test(this._obj)).to.be.true;
+  });
+  
   Assertion.addProperty('accountDetailJSON', function () {
     var detail = this._obj;
     expect(detail, 'accountDetailJSON').to.be.an('object');
     expect(detail, 'accountDetailJSON').to.have.property('id').that.is.a('string');
     expect(detail, 'accountDetailJSON').to.have.property('email').that.is.an.email;
+  });
+
+  Assertion.addProperty('accountDetailJSON2', function () {
+    var detail = this._obj;
+    expect(detail, 'accountDetailJSON').to.be.an('object');
+    expect(detail, 'accountDetailJSON').to.have.property('id').that.is.a('string');
+    expect(detail, 'accountDetailJSON').to.have.property('email').that.is.an.email;
+    expect(detail, 'accountDetailJSON').to.have.property('email').that.is.an.facebookId;
   });
 
   Assertion.addProperty('oauthAccessTokenResponseJSON', function () {
