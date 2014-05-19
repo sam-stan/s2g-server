@@ -30,9 +30,20 @@ exports.getPreferences = function(req, res, next) {
           return next();
         }
 
+        var questions = [];
+        for(var key in data2[0].questions) {
+          questions.push(data2[0].questions[key]);
+        }
+
+        var preferences = {
+          categories: data2[0].categories,
+          questions: questions,
+          lastUpdated: data2[0].lastUpdated
+        };
+
         res.send({
           status: 'success',
-          data: data2[0]
+          data: preferences
         });
       });
     } else {
@@ -60,7 +71,11 @@ exports.getPreferences = function(req, res, next) {
 
           res.send({
             status: 'success',
-            data: preferences
+            data: {
+              categories: prefs.categories,
+              questions: [],
+              lastUpdated: prefs.lastUpdated
+            }
           });
         });
       });

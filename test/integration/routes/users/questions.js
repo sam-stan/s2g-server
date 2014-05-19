@@ -13,7 +13,7 @@ var server = require('../../../lib/server.js')
   , accountFactory = require('../../../lib/accountFactory.js')
   ;
 
-describe('INTEGRATION #/users/:username/questions', function() {
+describe('INTEGRATION #/users/:username/preferences/questions', function() {
   var account, preferences_id, question_id;
 
   before( function (done) {
@@ -25,9 +25,10 @@ describe('INTEGRATION #/users/:username/questions', function() {
         preferences.save(function(err, data) {
           if(err) done(err);
           preferences_id = data._id;
-          Account.update({ email: account.username }, { preferences: preferences_id }, function(err, numAffected) {
-            if(err) done(err);
-            done();
+          Account.update({ email: account.username }, 
+            { preferences: preferences_id }, function(err, numAffected) {
+              if(err) done(err);
+              done();
           });
         });
       });
@@ -43,10 +44,10 @@ describe('INTEGRATION #/users/:username/questions', function() {
     });
   });
 
-  describe('GET #/users/:username/questions', function() {
+  describe('GET #/users/:username/preferences/questions', function() {
     it('should require authentication', function (done) {
       request(url)
-        .get('/users/' + account.username + '/questions')
+        .get('/users/' + account.username + '/preferences/questions')
         .set('Accept', 'application/json')
         .expect('Content-Type', 'application/json')
         .expect(401)
@@ -55,7 +56,7 @@ describe('INTEGRATION #/users/:username/questions', function() {
 
     it('should return a blank array if there are no questions stored', function(done) {
       request(url)
-        .get('/users/' + account.username + '/questions')
+        .get('/users/' + account.username + '/preferences/questions')
         .set('Authorization', 'Bearer ' + account.oauth2.access_token)
         .set('Accept', 'application/json')
         .expect('Content-Type', 'application/json')
@@ -70,16 +71,24 @@ describe('INTEGRATION #/users/:username/questions', function() {
 
     it('should return an array of questions in user preferences', function(done) {
       var sampleQuestion = {
-        _sample: preferences_id,
+        _id: 'abc123lend',
+        _sample: {
+          _id: 'abc123',
+          name: 'Lawn mower',
+          categories: [ 'tools'],
+          image: 'http://flicker.com/myimage',
+          tags: ['lawn', 'gas powered']
+        },
         type: 'lend',
         dateAsked: new Date()
       };
+      question_id = sampleQuestion._id;
 
       Preferences.update({ _id: preferences_id }, 
-        { $push: { samples: sampleQuestion }}, function(err) {
+        { questions: { 'abc123lend': sampleQuestion } }, function(err) {
           if(err) done(err);
           request(url)
-            .get('/users/' + account.username + '/questions')
+            .get('/users/' + account.username + '/preferences/questions')
             .set('Authorization', 'Bearer ' + account.oauth2.access_token)
             .set('Accept', 'application/json')
             .expect('Content-Type', 'application/json')
@@ -94,10 +103,10 @@ describe('INTEGRATION #/users/:username/questions', function() {
         });
     });
 
-    describe('GET #/users/:username/questions/:id', function() {
+    describe('GET #/users/:username/preferences/questions/:id', function() {
       it('should require authentication', function (done) {
         request(url)
-          .get('/users/' + account.username + '/questions/1')
+          .get('/users/' + account.username + '/preferences/questions/1')
           .set('Accept', 'application/json')
           .expect('Content-Type', 'application/json')
           .expect(401)
@@ -106,7 +115,7 @@ describe('INTEGRATION #/users/:username/questions', function() {
 
       it('should return the question with a valid id', function(done) {
         request(url)
-          .get('/users/' + account.username + '/questions/' + question_id)
+          .get('/users/' + account.username + '/preferences/questions/' + question_id)
           .set('Authorization', 'Bearer ' + account.oauth2.access_token)
           .set('Accept', 'application/json')
           .expect('Content-Type', 'application/json')
@@ -122,46 +131,46 @@ describe('INTEGRATION #/users/:username/questions', function() {
 
       // Or, should we search the database for a question and
       // add it to the user's account?
-      it('should return 400 if id is invalid', function(done) {
+      it('should return 404 if id is invalid', function(done) {
         request(url)
-          .get('/users/' + account.username + '/questions/wrongId')
+          .get('/users/' + account.username + '/preferences/questions/wrongId')
           .set('Authorization', 'Bearer ' + account.oauth2.access_token)
           .set('Accept', 'application/json')
           .expect('Content-Type', 'application/json')
-          .expect(400)
+          .expect(404)
           .end(done);
       });
     });
 
-    describe.skip('PUT #/users/:username/questions', function() {
+    describe.skip('PUT #/users/:username/preferences/questions', function() {
 
     });
   });
 
-  describe('PUT #/users/:username/questions', function() {
+  describe('PUT #/users/:username/preferences/questions/:id', function() {
     it('should require authentication', function (done) {
       request(url)
-        .put('/users/' + account.username + '/questions/' + question_id)
+        .put('/users/' + account.username + '/preferences/questions/' + question_id)
         .set('Accept', 'application/json')
         .expect('Content-Type', 'application/json')
         .expect(401)
         .end(done);
     });
 
-    it('should return 400 if id is invalid', function(done) {
+    it('should return 404 if id is invalid', function(done) {
       request(url)
-        .put('/users/' + account.username + '/questions/wrongId')
+        .put('/users/' + account.username + '/preferences/questions/wrongId')
         .set('Authorization', 'Bearer ' + account.oauth2.access_token)
         .set('Accept', 'application/json')
         .send({ response: true })
         .expect('Content-Type', 'application/json')
-        .expect(400)
+        .expect(404)
         .end(done);
     });
 
     it('should only let owning user account update the question', function(done) {
       request(url)
-        .put('/users/' + account.username + Math.random() + '/questions/' + question_id )
+        .put('/users/' + account.username + Math.random() + '/preferences/questions/' + question_id )
         .set('Authorization', 'Bearer ' + account.oauth2.access_token)
         .set('Content-Type', 'application/json')
         .send({ response: true })
@@ -171,7 +180,7 @@ describe('INTEGRATION #/users/:username/questions', function() {
 
     it('should return 201 when a document is saved', function (done) {
       request(url)
-        .put('/users/' + account.username + '/questions/' + question_id )
+        .put('/users/' + account.username + '/preferences/questions/' + question_id )
         .set('Authorization', 'Bearer ' + account.oauth2.access_token)
         .set('Accept', 'application/json')
         .set('Content-Type', 'application/json')
@@ -181,8 +190,8 @@ describe('INTEGRATION #/users/:username/questions', function() {
           Preferences.find({ _id: preferences_id }).exec(function(err, data) {
             if(err) done(err);
             var today = (new Date()).toDateString();
-            data[0].samples[0].should.have.property('response').that.equals(true);
-            expect(data[0].samples[0].dateAnswered.toDateString()).to.equal(today);
+            data[0].questions[question_id].should.have.property('response').that.equals(true);
+            expect(data[0].questions[question_id].dateAnswered.toDateString()).to.equal(today);
             done();
           });
         });

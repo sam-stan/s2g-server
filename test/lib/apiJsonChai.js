@@ -74,22 +74,22 @@ module.exports = function(chai, utils) {
     var preferences = this._obj;
     expect(preferences, 'userPreferencesJSON').to.be.an('object');
     expect(preferences, 'userPreferencesJSON').to.have.property('categories').that.is.an.instanceOf(Array);
-    expect(preferences, 'userPreferencesJSON').to.have.property('samples').that.is.an.instanceOf(Array);
+    expect(preferences, 'userPreferencesJSON').to.have.property('questions').that.is.an.instanceOf(Array);
     expect(preferences, 'userPreferencesJSON').to.have.property('lastUpdated').that.is.a('string');
   });
 
   Assertion.addProperty('userQuestionsJSON', function() {
     var questions = this._obj;
     expect(questions, 'userQuestionsJSON').to.be.an.instanceOf(Array);
-    questions.forEach(function(question) {
-      expect(question).to.be.userQuestionJSON;
-    });
+    for(var i = 0; i < questions.length; ++i) {
+      expect(questions[i]).to.be.a.userQuestionJSON;
+    }
   });
 
   Assertion.addProperty('userQuestionJSON', function() {
     var question = this._obj;
     expect(question).to.be.an('object');
-    expect(question).to.have.property('_sample').that.is.a('string');
+    expect(question).to.have.property('_sample').that.is.an('object');
     expect(question).to.have.property('type').that.is.a('string');
     expect(question).to.have.property('dateAsked').that.is.a('string');
   });

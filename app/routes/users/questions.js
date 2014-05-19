@@ -14,11 +14,11 @@ module.exports = function(server) {
 
   // Get all questions
   server.get({
-    url: '/users/:email/questions',
+    url: '/users/:email/preferences/questions',
     swagger: {
       summary: 'Get all questions for a user',
       notes: 'Returns a 200 with an empty array if there are no questions',
-      nickname: 'getUserQuestions'
+      nickname: 'getQuestions'
     },
     validation: {
       email: { isRequired: true, isEmail: true, scope: 'path', description: 'Your email for login.'}
@@ -36,15 +36,14 @@ module.exports = function(server) {
 
   // Get 1 question
   server.get({
-    url: '/users/:email/questions/:id',
+    url: '/users/:email/preferences/questions/:id',
     swagger: {
       summary: 'Get a specific question for the user',
       notes: 'Returns a 404 if the question or user doesn\'t exist',
       nickname: 'getUserQuestion'
     },
     validation: {
-      email: { isRequired: true, isEmail: true, scope: 'path', description: 'Your email for login.'},
-      id: { isRequired: true, scope: 'path', regex: /^[0-9a-f]{1,24}$/, description: '24 digit hex unique identifier.'},      
+      email: { isRequired: true, isEmail: true, scope: 'path', description: 'Your email for login.'}     
     }
   },[
     restify.queryParser(),
@@ -59,15 +58,14 @@ module.exports = function(server) {
 
   // Update 1 question
   server.put({
-    url: '/users/:email/questions/:id',
+    url: '/users/:email/preferences/questions/:id',
     swagger: {
       summary: 'Update a specific question for the user',
       notes: 'Returns a 404 if the question or user doesn\'t exist',
       nickname: 'getUserQuestion'
     },
     validation: {
-      email: { isRequired: true, isEmail: true, scope: 'path', description: 'Your email for login.'},
-      id: { isRequired: true, scope: 'path', regex: /^[0-9a-f]{1,24}$/, description: '24 digit hex unique identifier.'},      
+      email: { isRequired: true, isEmail: true, scope: 'path', description: 'Your email for login.'}     
     }
   },[
     restify.queryParser(),
