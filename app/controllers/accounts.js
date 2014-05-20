@@ -2,7 +2,9 @@
 var mongoose = require('mongoose')
   , Account = mongoose.model('Account')
   , logger = require('../logging').logger
-  , checkAccountError = require('../utilities').checkAccountError
+  , utils = require('../utilities')
+  , checkAccountError = utils.checkAccountError
+  , checkError = utils.checkError
   ;
 
 exports.create = function (req, res, next) {
@@ -14,14 +16,8 @@ exports.create = function (req, res, next) {
   var reply = null;
   account.save( function (err) {
     try {
-      if (err) {
-        console.log(err);
-        res.send(500, {
-          status: 'error',
-          message: err
-        });
-        return next();
-      }
+      checkError(err, res, next);
+
       res.send({
           status: 'success',
           data: {
@@ -40,11 +36,8 @@ exports.create = function (req, res, next) {
 exports.get = function(req,res,next) {
   // logger.debug('#account.get');
   Account.find( {email: req.params.username} ).exec( function (err, d) {
-    if (err) {
-      // res.status(500);
-      res.send(500, { status: 'error', message: err } );
-      return next();
-    } 
+    checkError(err, res, next);
+    
     if (d.length < 1) {
       res.send(404, { status: 'error', message: 'user ' + req.params.username + ' not found.'});
       return next();

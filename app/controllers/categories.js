@@ -2,15 +2,14 @@
 
 var mongoose = require('mongoose')
   , Category = mongoose.model('Category')
-  , logger = require('../logging').logger
+  , utils = require('../utilities')
+  , checkAccountError = utils.checkAccountError
+  , checkError = utils.checkError
   ;
 
 exports.get = function(req, res, next) {
   Category.find({}, function(err, data) {
-    if(err) {
-      res.send(500, { status: 'error', message: err });
-      return next();
-    }
+    checkError(err, res, next);
 
     var categories = [];
     for(var i = 0; i < data.length; ++i) {

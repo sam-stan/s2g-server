@@ -5,7 +5,9 @@ var mongoose = require('mongoose')
   , Preferences = mongoose.model('Preferences')
   , Sample = mongoose.model('Sample')
   , logger = require('../../logging').logger
-  , checkAccountError = require('../../utilities').checkAccountError
+  , utils = require('../../utilities')
+  , checkAccountError = utils.checkAccountError
+  , checkError = utils.checkError
   ;
 
 exports.getQuestions = function (req, res, next) {
@@ -60,14 +62,7 @@ exports.getNewQuestions = function (req, res, next) {
 
       (function createNewQuestions(count) {
         Sample.find({}).skip(count).limit(20).exec(function(err, data) {
-          if (err) {
-            logger.error(err);
-            res.send(500, {
-              status: 'error',
-              message: err
-            });
-            return next();
-          }
+          checkError(err, res, next);
 
           // Go through returned samples and look for available
           // questions, alternating between 'lend' and 'borrow'
@@ -112,18 +107,10 @@ exports.getNewQuestions = function (req, res, next) {
           }
 
           if(newQuestions.length >= 10 || data.length < 10) {
-            console.log('\n\n\nFound enough\n\n\n');
             // Update the preferences for the given account
             Preferences.update({ _id: preferences_id }, 
               { questions: questionsObj }, function(err, numAffected) {
-                if (err) {
-                  logger.error(err);
-                  res.send(500, {
-                    status: 'error',
-                    message: err
-                  });
-                  return next();
-                }
+                checkError(err, res, next);
 
                 if(numAffected !== 1) {
                   logger.error('Preferences document not successfully updated.');
@@ -141,7 +128,6 @@ exports.getNewQuestions = function (req, res, next) {
                 return next();
               });
           } else {
-            console.log('\n\n\nlooking for more\n\n\n');
             // Get 20 more samples to find new questions
             createNewQuestions(count + 20);
           }
@@ -214,14 +200,7 @@ exports.putQuestion = function (req, res, next) {
           { questions: preferences.questions, 
             lastUpdated: new Date()
           }, function(err, numUpdated) {
-            if (err) {
-              logger.error(err);
-              res.send(500, {
-                status: 'error',
-                message: err
-              });
-              return next();
-            }
+            checkError(err, res, next);
 
             if(numUpdated !== 1) {
               logger.error('Preferences document not successfully updated.');

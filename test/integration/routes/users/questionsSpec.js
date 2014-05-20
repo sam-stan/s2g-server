@@ -104,6 +104,25 @@ describe('INTEGRATION #/users/:username/preferences/questions', function() {
         });
     });
 
+    it('should return a 404 if the preferences object was not found', function(done) {
+      accountFactory.createAuthenticatedAccount(url)
+      .then( function (result) {
+        request(url)
+            .get('/users/' + result.username + '/preferences/questions')
+            .set('Authorization', 'Bearer ' + result.oauth2.access_token)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', 'application/json')
+            .expect(404)
+            .end(function(err, res) {
+              if(err) done(err);
+              res.body.should.exist.and.be.an.apiResponseJSON('error');
+              result.deleteAccount().then(function() {
+                done();
+              });
+            });
+      });
+    });
+
     describe('GET #/users/:username/preferences/questions/:id', function() {
       it('should require authentication', function (done) {
         request(url)
@@ -197,6 +216,25 @@ describe('INTEGRATION #/users/:username/preferences/questions', function() {
           });
         });
     });
+
+    it('should return a 404 if the preferences object was not found', function(done) {
+      accountFactory.createAuthenticatedAccount(url)
+      .then( function (result) {
+        request(url)
+            .get('/users/' + result.username + '/preferences/questions/' + question_id )
+            .set('Authorization', 'Bearer ' + result.oauth2.access_token)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', 'application/json')
+            .expect(404)
+            .end(function(err, res) {
+              if(err) done(err);
+              res.body.should.exist.and.be.an.apiResponseJSON('error');
+              result.deleteAccount().then(function() {
+                done();
+              });
+            });
+      });
+    });
   });
 
   describe('GET #/users/:username/preferences/questions/new', function() {
@@ -286,6 +324,25 @@ describe('INTEGRATION #/users/:username/preferences/questions', function() {
           expect(res.body.data.length).to.be.equal(0);
           done();
         });
+    });
+
+    it('should return a 404 if the preferences object was not found', function(done) {
+      accountFactory.createAuthenticatedAccount(url)
+      .then( function (result) {
+        request(url)
+            .get('/users/' + result.username + '/preferences/questions/new')
+            .set('Authorization', 'Bearer ' + result.oauth2.access_token)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', 'application/json')
+            .expect(404)
+            .end(function(err, res) {
+              if(err) done(err);
+              res.body.should.exist.and.be.an.apiResponseJSON('error');
+              result.deleteAccount().then(function() {
+                done();
+              });
+            });
+      });
     });
   });
 
