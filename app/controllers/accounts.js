@@ -2,6 +2,7 @@
 var mongoose = require('mongoose')
   , Account = mongoose.model('Account')
   , logger = require('../logging').logger
+  , checkAccountError = require('../utilities').checkAccountError
   ;
 
 exports.create = function (req, res, next) {
@@ -67,23 +68,7 @@ exports.get = function(req,res,next) {
 
 exports.put = function (req,res,next) {
   Account.find( {email: req.params.username} ).exec( function (err,d) {
-    if (err) {
-      logger.error(err);
-      res.send(500, {
-        status: 'error',
-        message: err
-      });
-      return next();
-    }
-    console.log('\n\n\n' + JSON.stringify(d) + '\n\n\n');
-    if ( d.length !== 1) {
-      logger.error('user %s not found', req.params.username);
-      res.send(400, {
-        status: 'error',
-        message: 'user ' + req.params.username + ' not found'
-      });
-      return next();
-    }    
+    checkAccountError(err, d, req.params.email, res, next);    
 
     // logger.debug('#account.put');
     var update = {

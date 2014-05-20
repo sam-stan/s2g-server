@@ -42,6 +42,7 @@ var Account = new Schema({
   lastName: { type: String, trim: true },
   address:  { type: String },
   avatar: String,
+  preferences: { type: ObjectId, ref: 'Preferences' }
 });
 
 Account.path('email').validate( validator.isEmail );

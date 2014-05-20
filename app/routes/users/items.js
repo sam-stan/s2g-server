@@ -3,8 +3,8 @@
 var restify = require('restify')
   , restifyValidation = require('node-restify-validation')
   // , accounts = require('../controllers/accounts' )
-  , users = require('../controllers/users')
-  , logger = require('../logging').logger
+  , items = require('../../controllers/users/items')
+  , logger = require('../../logging').logger
   ;
 
 module.exports = function(server) {
@@ -36,7 +36,7 @@ module.exports = function(server) {
     if (!req.username || req.username !== req.params.email) {
       return res.sendUnauthenticated();
     }
-    return users.putItem(req, res, next);
+    return items.putItem(req, res, next);
   });
 
   // Get all items
@@ -58,7 +58,7 @@ module.exports = function(server) {
     if (!req.username || req.username !== req.params.email) {
       return res.sendUnauthenticated();
     }
-    return users.getItems(req, res, next);
+    return items.getItems(req, res, next);
   });
 
   // Get 1 item
@@ -81,7 +81,7 @@ module.exports = function(server) {
     if (!req.username || req.username !== req.params.email) {
       return res.sendUnauthenticated();
     }
-    return users.getItem(req, res, next);
+    return items.getItem(req, res, next);
   });  
 
 };
