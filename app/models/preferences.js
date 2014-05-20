@@ -23,8 +23,8 @@ module.exports = Preferences;
     For example, a sample with _id: 'abc123' and 
     a question for lending would be -> 'abc123:lend'
   questions: {
-    '123abc:lend': {
-      _id: 'abc123:lend',
+    '123abc-lend': {
+      _id: 'abc123-lend',
       _sample: {
         _id: 'abc123',
         name: 'Lawn mower',
@@ -37,7 +37,7 @@ module.exports = Preferences;
       dateAnswered: some date, // left blank if new
       response: boolean // left blank if new
     },
-    'abc123:borrow': {
+    'abc123-borrow': {
   
     }
   }

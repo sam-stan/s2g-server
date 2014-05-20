@@ -9,8 +9,9 @@ var server = require('../../../lib/server.js')
   , mongoose = require('mongoose')
   , Account = mongoose.model('Account')
   , Preferences = mongoose.model('Preferences')
-  , Question = mongoose.model('Question')
+  , Sample = mongoose.model('Sample')
   , accountFactory = require('../../../lib/accountFactory.js')
+  , _ = require('underscore')
   ;
 
 describe('INTEGRATION #/users/:username/preferences/questions', function() {
@@ -71,7 +72,7 @@ describe('INTEGRATION #/users/:username/preferences/questions', function() {
 
     it('should return an array of questions in user preferences', function(done) {
       var sampleQuestion = {
-        _id: 'abc123lend',
+        _id: 'abc123-lend',
         _sample: {
           _id: 'abc123',
           name: 'Lawn mower',
@@ -85,7 +86,7 @@ describe('INTEGRATION #/users/:username/preferences/questions', function() {
       question_id = sampleQuestion._id;
 
       Preferences.update({ _id: preferences_id }, 
-        { questions: { 'abc123lend': sampleQuestion } }, function(err) {
+        { questions: { 'abc123-lend': sampleQuestion } }, function(err) {
           if(err) done(err);
           request(url)
             .get('/users/' + account.username + '/preferences/questions')
@@ -194,6 +195,96 @@ describe('INTEGRATION #/users/:username/preferences/questions', function() {
             expect(data[0].questions[question_id].dateAnswered.toDateString()).to.equal(today);
             done();
           });
+        });
+    });
+  });
+
+  describe('GET #/users/:username/preferences/questions/new', function() {
+    var questions = [];
+    before(function(done) {
+      var base_id = 'abc',
+          samples = [];
+      for(var i = 0; i < 10; ++i) {
+        samples.push({
+          name: 'shovel' + i,
+          categories: ['tools'],
+          image: 'http://such_a_tool.com/image.jpeg',
+          tags: ['shovel', 'lawn care']
+        });
+      }
+
+      Sample.create(samples, function(err) {
+        if(err) done(err);
+        done();
+      });
+    });
+
+    after(function(done) {
+      Sample.remove(function(err) {
+        if(err) done(err);
+        done();
+      });
+    });
+
+    it('should require authentication', function (done) {
+      request(url)
+        .get('/users/' + account.username + '/preferences/questions/new')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', 'application/json')
+        .expect(401)
+        .end(done);
+    });
+
+    it('should return 10 new questions if successful', function(done) {
+      request(url)
+        .get('/users/' + account.username + '/preferences/questions/new')
+        .set('Authorization', 'Bearer ' + account.oauth2.access_token)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', 'application/json')
+        .expect(200)
+        .end(function(err, res) {
+          if(err) done(err);
+          res.body.should.exist.and.be.an.apiResponseJSON('success');
+          res.body.should.have.property('data').that.is.a.userQuestionsJSON;
+          res.body.data.forEach(function(question) {
+            questions.push(question._id);
+          });
+          done();
+        });
+    });
+
+    it('should not return any duplicate questions', function(done) {
+      request(url)
+        .get('/users/' + account.username + '/preferences/questions/new')
+        .set('Authorization', 'Bearer ' + account.oauth2.access_token)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', 'application/json')
+        .expect(200)
+        .end(function(err, res) {
+          if(err) done(err);
+          res.body.data.forEach(function(question) {
+            questions.push(question._id);
+          });
+          res.body.should.exist.and.be.an.apiResponseJSON('success');
+          res.body.should.have.property('data').that.is.a.userQuestionsJSON;
+          expect(_.uniq(questions).length).to.equal(questions.length);
+          done();
+        });
+    });
+
+    it('should return an empty array if there are no more unique questions', function(done) {
+      request(url)
+        .get('/users/' + account.username + '/preferences/questions/new')
+        .set('Authorization', 'Bearer ' + account.oauth2.access_token)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', 'application/json')
+        .expect(200)
+        .end(function(err, res) {
+          if(err) done(err);
+          res.body.should.exist.and.be.an.apiResponseJSON('success');
+          res.body.should.have.property('data').that.is.a.userQuestionsJSON;
+          expect(res.body.data.length).to.be.equal(0);
+          done();
         });
     });
   });
