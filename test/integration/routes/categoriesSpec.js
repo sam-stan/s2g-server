@@ -16,16 +16,12 @@ var server = require('../../lib/server.js')
       var category = new Category({name: 'tools'});
       category.save(function(err) {
         if(err) done(err);
-        category = new Category({name: 'services'});
-        category.save(function(err) {
-          if(err) done(err);
-          done();
-        });
+        done();
       });
     });
 
     after(function(done) {
-      Category.remove({}, function(err) {
+      Category.remove({ name: 'tools' }, function(err) {
         if(err) done(err);
         done();
       });
@@ -43,7 +39,7 @@ var server = require('../../lib/server.js')
             if(err)
               return done(err);
             res.body.should.exist.and.be.an.apiResponseJSON('success');
-            res.body.should.have.property('data').to.have.length.above(1);
+            res.body.should.have.property('data').to.have.length.above(0);
             done();
           });
       });

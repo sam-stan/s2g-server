@@ -244,7 +244,7 @@ describe('INTEGRATION #/users/:username/preferences/questions', function() {
           samples = [];
       for(var i = 0; i < 10; ++i) {
         samples.push({
-          name: 'shovel' + i,
+          name: i + ' big shovel',
           categories: ['tools'],
           image: 'http://such_a_tool.com/image.jpeg',
           tags: ['shovel', 'lawn care']
@@ -258,7 +258,7 @@ describe('INTEGRATION #/users/:username/preferences/questions', function() {
     });
 
     after(function(done) {
-      Sample.remove(function(err) {
+      Sample.remove( { name: /big shovel/ }, function(err) {
         if(err) done(err);
         done();
       });
