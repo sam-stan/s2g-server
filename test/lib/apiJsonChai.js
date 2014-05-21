@@ -61,14 +61,6 @@ module.exports = function(chai, utils) {
     expect(detail, 'accountDetailJSON').to.have.property('email').that.is.an.email;
   });
 
-  Assertion.addProperty('accountDetailJSON2', function () {
-    var detail = this._obj;
-    expect(detail, 'accountDetailJSON').to.be.an('object');
-    expect(detail, 'accountDetailJSON').to.have.property('id').that.is.a('string');
-    expect(detail, 'accountDetailJSON').to.have.property('email').that.is.an.email;
-    expect(detail, 'accountDetailJSON').to.have.property('email').that.is.an.facebookId;
-  });
-
   Assertion.addProperty('oauthAccessTokenResponseJSON', function () {
     var token = this._obj;
     expect(token, 'oauth2Response').to.be.an('object');
