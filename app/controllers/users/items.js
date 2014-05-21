@@ -4,7 +4,9 @@ var mongoose = require('mongoose')
   , Item = mongoose.model('Item')
   , Account = mongoose.model('Account')
   , logger = require('../../logging').logger
-  , checkAccountError = require('../../utilities').checkAccountError
+  , utils = require('../../utilities')
+  , checkAccountError = utils.checkAccountError
+  , checkError = utils.checkError
   ;
 
 // create a 24 character hex string
@@ -57,14 +59,8 @@ exports.getItems = function (req, res, next) {
     checkAccountError(err, d, req.params.email, res, next);
 
     Item.find( {_owner: d[0]._id} ).exec( function (err,d) {
-      console.log('item query finished');
-      if (err) {
-        console.log(err);
-        res.send(500, { status: 'error', message: err } );
-        return next();
-      }
-      console.info('found items');
-      console.log(d);
+      checkError(err, res, next);
+      
       res.send({
         status: 'success',
         data: d
@@ -81,11 +77,8 @@ exports.getItem = function (req, res, next) {
   .find( {_id: req.params.id})
   .populate('_owner', 'email')
   .exec( function (err, d) {
-    if (err) {
-      logger.error(err);
-      res.send(500, { status: 'error', message: err } );
-      return next();
-    }
+    checkError(err, res, next);
+
     if ( d.length === 1 && d[0]._owner.email !== req.params.email) {
       res.send(404);
       return next();

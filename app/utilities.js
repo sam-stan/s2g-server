@@ -21,3 +21,14 @@ exports.checkAccountError = function( err, data, email, res, next) {
     return next();
   }
 };
+
+exports.checkError = function(err, res, next) {
+  if (err) {
+    logger.error(err);
+    res.send(500, {
+      status: 'error',
+      message: err
+    });
+    return next();
+  }
+};

@@ -7,6 +7,7 @@ var server = require('../../../lib/server.js')
   , expect = chai.expect
   , logger = require('../../../../app/logging').logger
   , mongoose = require('mongoose')
+  , Account = mongoose.model('Account')
   , Preferences = mongoose.model('Preferences')
   , accountFactory = require('../../../lib/accountFactory.js')
   ;
@@ -60,6 +61,42 @@ describe('INTEGRATION #/users/:username/preferences', function() {
         });
     });
 
+    it('should return the preferences object if created', function(done) {
+      request(url)
+        .get('/users/' + account.username + '/preferences')
+        .set('Authorization', 'Bearer ' + account.oauth2.access_token)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', 'application/json')
+        .expect(200)
+        .end(function(err, res) {
+          if(err) done(err);
+          res.body.should.exist.and.be.an.apiResponseJSON('success');
+          res.body.should.have.property('data').that.is.a.userPreferencesJSON;
+          done();
+        });
+    });
+
+    it('should return a 404 if preferences _id is wrong in account object', function(done) {
+      accountFactory.createAuthenticatedAccount(url)
+      .then( function (result) {
+        Account.update({ email: result.username }, { preferences: "5355f55407dd150200206883" }, function(err, numAffected) {
+          request(url)
+            .get('/users/' + result.username + '/preferences')
+            .set('Authorization', 'Bearer ' + result.oauth2.access_token)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', 'application/json')
+            .expect(404)
+            .end(function(err, res) {
+              if(err) done(err);
+              res.body.should.exist.and.be.an.apiResponseJSON('error');
+              result.deleteAccount().then(function() {
+                done();
+              });
+            });
+        });
+      });
+    });
+
     describe.skip('PUT #/users/:username/preferences', function() {
 
     });
@@ -100,9 +137,23 @@ describe('INTEGRATION #/users/:username/preferences', function() {
           .end(done);
       });
 
-      // Should it have this functionality?
-      it.skip('should create a preferences object if one is not present', function() {
-
+      it('should create a preferences object if one is not present', function(done) {
+        accountFactory.createAuthenticatedAccount(url)
+          .then( function (result) {
+            request(url)
+              .put('/users/' + account.username + '/preferences/categories' )
+              .set('Authorization', 'Bearer ' + account.oauth2.access_token)
+              .set('Accept', 'application/json')
+              .set('Content-Type', 'application/json')
+              .send(categories)
+              .expect(201)
+              .end(function(err, res) {
+                if(err) done(err);
+                result.deleteAccount().then(function() {
+                  done();
+                });
+              });
+          });
       });
     });
 
