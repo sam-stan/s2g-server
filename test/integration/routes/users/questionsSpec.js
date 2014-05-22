@@ -287,6 +287,7 @@ describe('INTEGRATION #/users/:username/preferences/questions', function() {
           res.body.data.forEach(function(question) {
             questions.push(question._id);
           });
+          res.body.data.length.should.equal(10);
           done();
         });
     });
@@ -310,7 +311,7 @@ describe('INTEGRATION #/users/:username/preferences/questions', function() {
         });
     });
 
-    it('should return an empty array if there are no more unique questions', function(done) {
+    it('should return a partial array if there are no more unique questions', function(done) {
       request(url)
         .get('/users/' + account.username + '/preferences/questions/new')
         .set('Authorization', 'Bearer ' + account.oauth2.access_token)
@@ -321,7 +322,7 @@ describe('INTEGRATION #/users/:username/preferences/questions', function() {
           if(err) done(err);
           res.body.should.exist.and.be.an.apiResponseJSON('success');
           res.body.should.have.property('data').that.is.a.userQuestionsJSON;
-          expect(res.body.data.length).to.be.equal(0);
+          expect(res.body.data.length).to.be.lt(10);
           done();
         });
     });
