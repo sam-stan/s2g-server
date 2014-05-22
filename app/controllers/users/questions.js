@@ -40,6 +40,39 @@ exports.getQuestions = function (req, res, next) {
     });
 };
 
+exports.deleteQuestions = function (req, res, next) {
+  Account
+    .find({ email: req.params.email })
+    .exec(function (err, data) {
+      checkAccountError(err, data, req.params.email, res, next);
+
+      if (!data[0].preferences) {
+        logger.error('preferences for %s not found', req.params.email);
+        res.send(404, {
+          status: 'error',
+          message: 'user preferences ' + req.params.email + ' not found'
+        });
+        return next();
+      }
+
+      Preferences.update({ _id: data[0].preferences }, { $unset: { questions: true } }, function (err, numAffected) {
+        checkError(err, res, next);
+
+        if (numAffected !== 1) {
+          logger.error('Preferences document not successfully updated.');
+          res.send(500, {
+            status: 'error',
+            message: 'Preferences document not successfully updated.'
+          });
+          return next();
+        }
+
+        res.send(200);
+        return next();
+      });
+    });
+};
+
 exports.getNewQuestions = function (req, res, next) {
   Account
     .find({ email: req.params.email })

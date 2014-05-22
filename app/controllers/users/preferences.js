@@ -31,6 +31,7 @@ exports.getPreferences = function(req, res, next) {
         }
 
         var preferences = {
+          _id: data2[0]._id,
           categories: data2[0].categories,
           questions: questions,
           lastUpdated: data2[0].lastUpdated
@@ -60,6 +61,7 @@ exports.getPreferences = function(req, res, next) {
           res.send({
             status: 'success',
             data: {
+              _id: prefs._id,
               categories: prefs.categories,
               questions: [],
               lastUpdated: prefs.lastUpdated
@@ -81,29 +83,45 @@ exports.putPreferencesCategories = function(req, res, next) {
       checkAccountError(err, data, req.params.email, res, next);
 
       var query;
-      if(data[0].preferences) {
-        query = { _id: data[0].preferences };
-      } else {
-        query = {};
-      }
+      if ( data[0].preferences) {
+        Preferences.update({ _id: data[0].preferences }, { categories: req.params.categories }, 
+          function (err, numAffected) {
+            checkError(err, res, next);
 
-      Preferences.update(query, { categories: req.params.categories }, 
-        { upsert: true}, function(err) {
-          checkError(err, res, next);
-          
-          // If preferences were upserted, update the account
-          if(!data[0].preferences) {
-            Account.update({ email: req.params.email }, { preferences: prefs._id }, function(err) {
-              checkError(err, res, next);
-
-              res.send(201);
+            if (numAffected !== 1) {
+              logger.error('Preferences document not successfully updated.');
+              res.send(500, {
+                status: 'error',
+                message: 'Preferences document not successfully updated.'
+              });
               return next();
-            });
-          } else {
+            }
+            
             res.send(201);
             return next();
-          }
+          });
+      } else {
+        var preferences = new Preferences({ categories: req.params.categories });
+        preferences.save(function (err, PrefData) {
+          checkError(err, res, next);
+
+          Account.update({ _id: data[0]._id }, { preferences: PrefData._id }, function (err, numAffected) {
+            checkError(err, res, next);
+            if (numAffected !== 1) {
+              logger.error('Preferences document not successfully updated.');
+              res.send(500, {
+                status: 'error',
+                message: 'Preferences document not successfully updated.'
+              });
+              preferences.remove();
+              return next();
+            }
+
+            res.send(201);
+            return next();
+          });
         });
+      }
     });
 };
 

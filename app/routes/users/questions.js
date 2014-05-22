@@ -34,6 +34,28 @@ module.exports = function(server) {
     return questions.getQuestions(req, res, next);
   });
 
+  // Delete all questions
+  server.del({
+    url: '/users/:email/preferences/questions',
+    swagger: {
+      summary: 'Delete all questions for a user',
+      notes: 'Returns a 404 if user\'s preferences object does not exist',
+      nickname: 'deleteQuestions'
+    },
+    validation: {
+      email: { isRequired: true, isEmail: true, scope: 'path', description: 'Your email for login.'}
+    }
+  },[
+    restify.queryParser(),
+    restifyValidation.validationPlugin({errorsAsArray: false})
+  ],
+  function (req, res, next) {
+    if (!req.username || req.username !== req.params.email) {
+      return res.sendUnauthenticated();
+    }
+    return questions.deleteQuestions(req, res, next);
+  });
+
   // Get 10 new questions
   server.get({
     url: '/users/:email/preferences/questions/new',

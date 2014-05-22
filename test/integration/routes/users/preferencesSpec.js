@@ -141,16 +141,20 @@ describe('INTEGRATION #/users/:username/preferences', function() {
         accountFactory.createAuthenticatedAccount(url)
           .then( function (result) {
             request(url)
-              .put('/users/' + account.username + '/preferences/categories' )
-              .set('Authorization', 'Bearer ' + account.oauth2.access_token)
+              .put('/users/' + result.username + '/preferences/categories' )
+              .set('Authorization', 'Bearer ' + result.oauth2.access_token)
               .set('Accept', 'application/json')
               .set('Content-Type', 'application/json')
               .send(categories)
               .expect(201)
               .end(function(err, res) {
                 if(err) done(err);
-                result.deleteAccount().then(function() {
-                  done();
+                Account.find({ email: result.username }, function (err, data) {
+                  Preferences.remove({ _id: data[0].preferences }, function() {
+                    result.deleteAccount().then(function() {
+                      done();
+                    });
+                  });
                 });
               });
           });
