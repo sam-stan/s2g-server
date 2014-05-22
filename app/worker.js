@@ -33,6 +33,7 @@ function createServer () {
     logger.error('Mongoose connection error: %s', err);
   });
   mongoose.connection.on('open', function(err) {
+    console.dir(conf.get('mongo.db'));
     logger.info('Mongoose connection opened.');
   });
 

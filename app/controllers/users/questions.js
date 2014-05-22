@@ -61,31 +61,31 @@ exports.getNewQuestions = function (req, res, next) {
           preferences_id = data[0].preferences._id;
 
       (function createNewQuestions(count) {
-        Sample.find({}).skip(count).limit(20).exec(function(err, data) {
+        Sample.find({}).skip(count).limit(20).exec(function(err, Sampledata) {
           checkError(err, res, next);
 
           // Go through returned samples and look for available
           // questions, alternating between 'lend' and 'borrow'
           // for each sample returned
           var id, question_id, question, type;
-          for(var i = 0; i < data.length && newQuestions.length === 10; ++i) {
+          for(var i = 0; i < Sampledata.length && newQuestions.length !== 10; ++i) {
             // Track if question is available for sample
             question_id = null;
-            id = data[i]._id;
+            id = Sampledata[i]._id;
             if(i % 2) {
               if(!questionsObj[id + '-lend']) {
-                type: 'lend';
+                type = 'lend';
                 question_id = id + '-lend';
               } else if (!questionsObj[id + '-borrow']) {
-                type: 'borrow';
+                type = 'borrow';
                 question_id = id + '-borrow';
               }
             } else {
               if(!questionsObj[id + '-borrow']) {
-                type: 'borrow';
+                type = 'borrow';
                 question_id = id + '-borrow';
               } else if (!questionsObj[id + '-lend']) {
-                type: 'lend';
+                type = 'lend';
                 question_id = id + '-lend';
               }
             }
@@ -94,7 +94,7 @@ exports.getNewQuestions = function (req, res, next) {
             if(question_id) {
               question = {
                 _id: question_id,
-                _sample: data[i],
+                _sample: Sampledata[i],
                 type: type,
                 dateAsked: new Date()
               };
@@ -106,10 +106,10 @@ exports.getNewQuestions = function (req, res, next) {
             }
           }
 
-          if(newQuestions.length >= 10 || data.length < 10) {
+          if(newQuestions.length >= 10 || Sampledata.length < 10) {
             // Update the preferences for the given account
             Preferences.update({ _id: preferences_id }, 
-              { questions: questionsObj }, function(err, numAffected) {
+              { questions: JSON.parse(JSON.stringify(questionsObj)) }, function(err, numAffected) {
                 checkError(err, res, next);
 
                 if(numAffected !== 1) {
