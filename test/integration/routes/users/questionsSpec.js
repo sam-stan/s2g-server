@@ -30,7 +30,7 @@ describe('INTEGRATION #/users/:username/preferences/questions', function() {
             { preferences: preferences_id }, function(err, numAffected) {
               if(err) done(err);
               done();
-          });
+            });
         });
       });
     });

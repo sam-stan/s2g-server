@@ -1,3 +1,5 @@
+'use strict';
+
 var mongoose = require('mongoose')
   , Preferences = mongoose.model('Preferences')
   , Account = mongoose.model('Account')
@@ -92,17 +94,17 @@ exports.putPreferencesCategories = function(req, res, next) {
           checkError(err, res, next);
           
           // If preferences were upserted, update the account
-          if(!data[0].preferences) {
-            Account.update({ email: req.params.email }, { preferences: prefs._id }, function(err) {
-              checkError(err, res, next);
+          // if(!data[0].preferences) {
+          //   Account.update({ email: req.params.email }, { preferences: prefs._id }, function(err) {
+          //     checkError(err, res, next);
 
-              res.send(201);
-              return next();
-            });
-          } else {
-            res.send(201);
-            return next();
-          }
+          //     res.send(201);
+          //     return next();
+          //   });
+          // } else {
+          //   res.send(201);
+          //   return next();
+          // }
         });
     });
 };

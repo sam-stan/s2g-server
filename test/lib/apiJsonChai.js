@@ -70,7 +70,7 @@ module.exports = function(chai, utils) {
     expect(token, 'oauth2Response').to.have.property('token_type').that.equals('Bearer');
   });
 
-  Assertion.addProperty('userPreferencesJSON', function() {
+  Assertion.addProperty('userPreferencesJSON', function () {
     var preferences = this._obj;
     expect(preferences, 'userPreferencesJSON').to.be.an('object');
     expect(preferences, 'userPreferencesJSON').to.have.property('categories').that.is.an.instanceOf(Array);
@@ -78,20 +78,44 @@ module.exports = function(chai, utils) {
     expect(preferences, 'userPreferencesJSON').to.have.property('lastUpdated').that.is.a('string');
   });
 
-  Assertion.addProperty('userQuestionsJSON', function() {
+  Assertion.addProperty('userQuestionsJSON', function () {
     var questions = this._obj;
     expect(questions, 'userQuestionsJSON').to.be.an.instanceOf(Array);
-    for(var i = 0; i < questions.length; ++i) {
+    for (var i = 0; i < questions.length; ++i) {
       expect(questions[i]).to.be.a.userQuestionJSON;
     }
   });
 
-  Assertion.addProperty('userQuestionJSON', function() {
+  Assertion.addProperty('userQuestionJSON', function () {
     var question = this._obj;
     expect(question).to.be.an('object');
     expect(question).to.have.property('_sample').that.is.an('object');
     expect(question).to.have.property('type').that.is.a('string');
     expect(question).to.have.property('dateAsked').that.is.a('string');
+  });
+
+  Assertion.addProperty('samplesJSON', function () {
+    var samples = this._obj;
+    expect(samples, 'samplesJSON').to.be.an.instanceOf(Array);
+    for (var i=0; i<samples.length; ++i) {
+      expect(samples[i]).to.be.a.sampleJSON;
+    }
+  });
+
+  Assertion.addProperty('sampleJSON', function () {
+    var sample = this._obj;
+    expect(sample).to.be.an('object');
+    expect(sample).to.have.property('id').that.is.a('string');
+    expect(sample).to.have.property('name').that.is.a('string');
+    expect(sample).to.have.property('image').that.is.a('string');
+    expect(sample).to.have.property('tags').that.is.an.instanceOf(Array);
+    for (var i=0; i<sample.tags.length; ++i) {
+      expect(sample.tags[i]).to.be.a('string');
+    }
+    expect(sample).to.have.property('categories').that.is.an.instanceOf(Array);
+    for (var j=0; j<sample.categories; ++j) {
+      expect(sample.categories[j]).to.be.a('string');
+    }
   });
 
 };
