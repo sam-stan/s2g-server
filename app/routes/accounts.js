@@ -31,7 +31,7 @@ module.exports = function(server) {
     url: '/accounts',
     swagger: {
       summary: 'Update User\'s FacebookId',
-      notes: 'The user must have been created first using a post',
+      notes: 'The user must have been created first using a post and check if it exist',
       nickname: 'updateUserFacebookId'
     },
     validation: {                
@@ -44,4 +44,22 @@ module.exports = function(server) {
     restifyValidation.validationPlugin({errorsAsArray: false})
   ],
   accounts.update); 
+
+// check if fb exist
+  server.get({
+    url: '/accounts',
+    swagger: {
+      summary: 'Check If User\'s FacebookId Exist',
+      notes: 'The user must have been created first using a post',
+      nickname: 'checkUserFacebookId'
+    },
+    validation: {                
+      facebookId: { isRequired: true, scope: 'query', description: 'facebookId is needed in order to verify'}
+    }
+  },[ // middleware
+    restify.queryParser(),
+    restify.bodyParser(),
+    restifyValidation.validationPlugin({errorsAsArray: false})
+  ],
+  accounts.getFbId); 
 };

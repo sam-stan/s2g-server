@@ -5,6 +5,7 @@ var mongoose = require('mongoose')
   ;
 
 exports.create = function (req, res, next) {
+
   var account = new Account({
     email: req.params.email,
     password: req.params.password,
@@ -44,7 +45,6 @@ exports.update = function (req, res, next) {
     }
     else {
       data.facebookId = req.params.facebookId;
-      console.log(data);
       data.save( function (err) {
       try {
         if(err) {
@@ -72,4 +72,24 @@ exports.update = function (req, res, next) {
       });
     }
   });   
+};
+
+exports.getFbId = function (req, res, next) {
+  Account.findOne({facebookId:req.params.facebookId}, function (err, data) {
+    if(err) {
+      console.log(err);
+      return next();
+    }
+    else {
+      res.send({
+        status: 'success',
+        data: {
+          email: data.email,
+          facebookId: data.facebookId,
+          id: data.id
+          }
+        });
+      return next();
+    }
+  });
 };

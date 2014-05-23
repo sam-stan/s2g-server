@@ -33,7 +33,7 @@ var options = {
 var Account = new Schema({
   created: { type: Date, default: Date.now },
   email: { type: String, required: true, unique: true, index: true, trim: true },
-  facebookId: { type: String, unique: true, index: true, trim: true },
+  facebookId: { type: String,index: { unique: true, sparse: true }, trim: true },
   _neighborhood: { type: ObjectId, ref: 'Neighborhood', required: true, index: true},
   passwordHash: { type: String, required: true },
   salt: String,
