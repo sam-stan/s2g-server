@@ -108,6 +108,7 @@ exports.putPreferencesCategories = function(req, res, next) {
             res.send(201);
             return next();
           });
+
         });
       }
     });
