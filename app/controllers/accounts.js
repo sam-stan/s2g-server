@@ -74,7 +74,7 @@ exports.update = function (req, res, next) {
   });   
 };
 
-exports.getFbId = function (req, res, next) {
+exports.checkFbId = function (req, res, next) {
   Account.findOne({facebookId:req.params.facebookId}, function (err, data) {
     if(err) {
       console.log(err);

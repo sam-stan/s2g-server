@@ -46,8 +46,8 @@ module.exports = function(server) {
   accounts.update); 
 
 // check if fb exist
-  server.get({
-    url: '/accounts',
+  server.put({
+    url: '/accounts/facebookId',
     swagger: {
       summary: 'Check If User\'s FacebookId Exist',
       notes: 'The user must have been created first using a post',
@@ -61,5 +61,5 @@ module.exports = function(server) {
     restify.bodyParser(),
     restifyValidation.validationPlugin({errorsAsArray: false})
   ],
-  accounts.getFbId); 
+  accounts.checkFbId); 
 };

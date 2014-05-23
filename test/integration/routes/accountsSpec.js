@@ -103,7 +103,7 @@ describe( 'INTEGRATION #/accounts', function () {
 
     it('should verify if the facebookId Exist', function (done) {            
       request(url)
-      .get('/accounts')
+      .put('/accounts/facebookId')
       .query({facebookId:'testtime2'})
       .set('Accept', 'application/json')
       .expect('Content-Type', 'application/json')
@@ -119,70 +119,6 @@ describe( 'INTEGRATION #/accounts', function () {
     after( function (done) {
       account.deleteAccount()
       .then(done);
-    });
-  });
-
-  describe( 'GET #/accounts/:username/facebookId', function () {
-    require('../../../app/models/account');
-    var Account = mongoose.model('Account');
-    var account = new Account({
-      email: Math.random() + '@share2give.lan',
-      password: "a wonderful day",
-      facebookId: "testtime2",
-      _neighborhood: mongoose.Types.ObjectId().toString()    
-    });
-    
-    before( function (done) {
-      server.ready( function () {
-        account.save( function (err) {
-          try {
-            if (err) {
-              console.log(err);
-              res.send(500, {
-                status: 'error',
-                message: err
-              });
-              return next();
-            }
-            res.send({
-              status: 'success',
-              data: {
-                email: account.email,
-                id: account.id
-              }
-            });
-            return next();
-          }
-          catch (error) {
-            console.log(error);
-          }	
-          done();
-        });
-      });
-    });
-
-    it('should verify if the facebookId Exist', function (done) {
-          request(url)
-          .get('/accounts')
-          .query({facebookId:'testtime2'})
-          .set('Accept', 'application/json')
-          .expect('Content-Type', 'application/json')
-          .expect(200)
-          .end(function (err, res) {
-            if (err) return done(err);
-            res.body.should.exist.and.be.an.apiResponseJSON('success');            
-          return done();
-          });        
-    });
-
-    after( function () {
-      console.log('expecting to delete /@share2give.lan/i');
-      // tidy up and delete the test account.
-      Account.remove( {email: /@share2give.lan/i } , function(err) {
-        if (err) {
-          logger.warn( 'Failed to remove the test accounts: ' + err );
-        }
-      });
     });
   });
 
