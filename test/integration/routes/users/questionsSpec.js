@@ -347,4 +347,60 @@ describe('INTEGRATION #/users/:username/preferences/questions', function() {
     });
   });
 
+  describe('DELETE #/users/:username/preferences/questions', function() {
+    it('should require authentication', function (done) {
+      request(url)
+        .del('/users/' + account.username + '/preferences/questions')
+        .set('Accept', 'application/json')
+        .expect('Content-Type', 'application/json')
+        .expect(401)
+        .end(done);
+    });
+
+    it('should return a 404 if the preferences object was not found', function(done) {
+      accountFactory.createAuthenticatedAccount(url)
+      .then( function (result) {
+        request(url)
+            .del('/users/' + result.username + '/preferences/questions')
+            .set('Authorization', 'Bearer ' + result.oauth2.access_token)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', 'application/json')
+            .expect(404)
+            .end(function(err, res) {
+              if(err) done(err);
+              res.body.should.exist.and.be.an.apiResponseJSON('error');
+              result.deleteAccount().then(function() {
+                done();
+              });
+            });
+      });
+    });
+
+    it('should only let owning user account delete the questions', function(done) {
+      request(url)
+        .del('/users/' + account.username + Math.random() + '/preferences/questions' )
+        .set('Authorization', 'Bearer ' + account.oauth2.access_token)
+        .set('Content-Type', 'application/json')
+        .expect(401)
+        .end(done);
+    });
+
+    it('should return a 200 if questions object was reset to {}', function(done) {
+      request(url)
+        .del('/users/' + account.username + '/preferences/questions')
+        .set('Authorization', 'Bearer ' + account.oauth2.access_token)
+        .set('Accept', 'application/json')
+        .expect('Content-Type', 'application/json')
+        .expect(200)
+        .end(function(err, res) {
+          // Pull out into Unit test
+          Preferences.find({ _id: preferences_id }, function(err, data) {
+            if(err) done(err);
+            expect(data[0].questions).to.deep.equal({});
+            done();
+          });
+        });
+    });
+  });
+
 });

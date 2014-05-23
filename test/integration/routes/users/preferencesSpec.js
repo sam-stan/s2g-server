@@ -76,27 +76,6 @@ describe('INTEGRATION #/users/:username/preferences', function() {
         });
     });
 
-    it('should return a 404 if preferences _id is wrong in account object', function(done) {
-      accountFactory.createAuthenticatedAccount(url)
-      .then( function (result) {
-        Account.update({ email: result.username }, { preferences: "5355f55407dd150200206883" }, function(err, numAffected) {
-          request(url)
-            .get('/users/' + result.username + '/preferences')
-            .set('Authorization', 'Bearer ' + result.oauth2.access_token)
-            .set('Accept', 'application/json')
-            .expect('Content-Type', 'application/json')
-            .expect(404)
-            .end(function(err, res) {
-              if(err) done(err);
-              res.body.should.exist.and.be.an.apiResponseJSON('error');
-              result.deleteAccount().then(function() {
-                done();
-              });
-            });
-        });
-      });
-    });
-
     describe.skip('PUT #/users/:username/preferences', function() {
 
     });
@@ -141,16 +120,20 @@ describe('INTEGRATION #/users/:username/preferences', function() {
         accountFactory.createAuthenticatedAccount(url)
           .then( function (result) {
             request(url)
-              .put('/users/' + account.username + '/preferences/categories' )
-              .set('Authorization', 'Bearer ' + account.oauth2.access_token)
+              .put('/users/' + result.username + '/preferences/categories' )
+              .set('Authorization', 'Bearer ' + result.oauth2.access_token)
               .set('Accept', 'application/json')
               .set('Content-Type', 'application/json')
               .send(categories)
               .expect(201)
               .end(function(err, res) {
                 if(err) done(err);
-                result.deleteAccount().then(function() {
-                  done();
+                Account.find({ email: result.username }, function (err, data) {
+                  Preferences.remove({ _id: data[0].preferences }, function() {
+                    result.deleteAccount().then(function() {
+                      done();
+                    });
+                  });
                 });
               });
           });
