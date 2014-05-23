@@ -60,6 +60,44 @@ describe( 'INTEGRATION #/samples', function() {
 
   });
 
+  describe.only('PUT #/samples', function () {
+    var objectId = new mongoose.Types.ObjectId();
+    var category = {
+        id: objectId,
+        name: 'Some Category',
+        categories: ['some category'],
+        tags: ['a tag'],
+        image: 'http://image.url.png'
+      };
+
+    it('should require authentication', function (done) {
+      request(url)
+        .put('/samples/' + category.id)
+        .send(category)
+        .expect(401)
+        .end(done);
+    });
+    it('should create a sample from json with specific id', function (done) {
+      request(url)
+        .put('/samples/' + category.id)
+        .set('Authorization', 'Bearer ' + account.oauth2.access_token)
+        .send(category)
+        .expect(201)
+        .end( function (err,res) {
+          if (err) return done(err);
+          request(url)
+            .get('/samples/' + category.id)
+            .set('Authorization', 'Bearer ' + account.oauth2.access_token)
+            .expect(200, function (res) {
+              res.body.should.exist.and.be.an.apiResponseJSON('success');
+              res.body.data.should.exist.and.be.a.samplesJSON;
+              res.body.data[0].should.exist.and.be.a.sampleJSON;              
+            })
+            .end(done);
+        });
+    });
+  });
+
   describe('POST #/samples', function () {
     var category = {
         name: 'Some Category',

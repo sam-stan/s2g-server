@@ -76,13 +76,38 @@ module.exports = function(server) {
     return samples.create(req, res, next);
   });
 
+  server.put({
+    url: '/samples/:id',
+    swagger: {
+      summary: 'Add or update a specific category',
+      notes: 'Returns a 204',
+      nickname: 'putSample'
+    },
+    validation: {
+      name: { isRequired: true, scope: 'query', description: 'Name of the Sample.'},
+      image: { isRequired: true, scope: 'query', description: 'Image of the Sample.'},
+      categories: { isRequired: true, scope: 'query', description: 'Array of categories to which this item belongs'},
+      tags: { isRequired: false, scope: 'query', description: 'Array of tags.'},
+      id: { isRequired: false, scope: 'query', description: 'Id of the item. Must match that of the id in the uri if present.'}
+    }
+  },[ //middleware
+    restify.bodyParser(),
+    restifyValidation.validationPlugin({errorsAsArray: false})
+  ],
+  function (req, res, next) {
+    if (!req.username) {
+      return res.sendUnauthenticated();
+    }
+    return samples.put(req, res, next);
+  });  
+
   // Delete a sample
   server.del({
       url: '/samples/:id',
       swagger: {
         summary: 'Delete a sample by id/',
         notes: '404 when no such sample, 204 when deleted',
-        nickname: 'removeSample'        
+        nickname: 'deleteSample'        
       },
       validation: {
       }
@@ -98,4 +123,5 @@ module.exports = function(server) {
       return samples.removeOne(req, res, next);
     }
   );
+
 };

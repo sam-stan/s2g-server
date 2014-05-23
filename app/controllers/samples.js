@@ -90,6 +90,32 @@ exports.create = function (req, res, next) {
   });
 };
 
+exports.put = function (req, res, next) {
+  var sample = new Sample({
+    _id: req.params.id,
+    name: req.params.name,
+    description: req.params.description,
+    image: req.params.image,
+    categories: req.params.categories,
+    tags: req.params.tags
+  });
+  var update = sample.toObject();
+  delete update._id;
+
+  Sample.update({_id: req.params.id}, update, {upsert: true},function (err) {
+    if (err) {
+      logger.error('Failed to save sample %s: %s', req.params.id, req.params.name);
+      res.send(500,{
+        status: 'error',
+        message: err
+      });
+      return next();
+    }
+    res.send(201);
+    return next();
+  });
+};
+
 exports.removeOne = function (req, res, next) {
   Sample.find({_id: req.params.id}).exec(function (err, d) {
     var reply = {};
