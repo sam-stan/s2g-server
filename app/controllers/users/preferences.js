@@ -1,3 +1,5 @@
+'use strict';
+
 var mongoose = require('mongoose')
   , Preferences = mongoose.model('Preferences')
   , Account = mongoose.model('Account')
