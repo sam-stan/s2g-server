@@ -7,7 +7,7 @@ var mongoose = require('mongoose')
 
 exports.get = function (req, res, next) {
   Sample.find().exec(function (err, d) {
-    var reply; 
+    var reply = {}; 
     if (err) {
       reply.status = 'error';
       reply.message = err;
@@ -35,7 +35,7 @@ exports.get = function (req, res, next) {
 
 exports.getOne = function (req, res, next) {
   Sample.find({_id: req.params.id}).exec(function (err, d) {
-    var reply;
+    var reply = {};
     if (err) {
       reply.status = 'error';
       reply.message = err;
@@ -92,7 +92,7 @@ exports.create = function (req, res, next) {
 
 exports.removeOne = function (req, res, next) {
   Sample.find({_id: req.params.id}).exec(function (err, d) {
-    var reply;
+    var reply = {};
     if (err) {
       reply.status = 'error';
       reply.message = err;
