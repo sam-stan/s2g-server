@@ -60,7 +60,7 @@ describe( 'INTEGRATION #/samples', function() {
 
   });
 
-  describe.only('PUT #/samples', function () {
+  describe('PUT #/samples', function () {
     var objectId = new mongoose.Types.ObjectId();
     var category = {
         id: objectId,
