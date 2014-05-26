@@ -21,6 +21,7 @@ exports.get = function (req, res, next) {
     for (var i=0; i<d.length; ++i) {
       reply.data.push({
         id: d[i]._id,
+        type: d[i].type,
         name: d[i].name,
         image: d[i].image,
         tags: d[i].tags,
@@ -50,6 +51,7 @@ exports.getOne = function (req, res, next) {
       status: 'success',
       data: {
         id: d[0]._id,
+        type: d[0].type,
         name: d[0].name,
         image: d[0].image,
         tags: d[0].tags,
@@ -64,6 +66,7 @@ exports.getOne = function (req, res, next) {
 exports.create = function (req, res, next) {
   var sample = new Sample({
     name: req.params.name,
+    type: req.params.type,
     image: req.params.image,
     categories: req.params.categories,
     tags: req.params.tags
@@ -80,6 +83,7 @@ exports.create = function (req, res, next) {
       status: 'success',
       data: {
         id: sample._id,
+        type: req.params.type,
         name: req.params.name,
         image: req.params.image,
         categories: req.params.categories,
@@ -93,6 +97,7 @@ exports.create = function (req, res, next) {
 exports.put = function (req, res, next) {
   var sample = new Sample({
     _id: req.params.id,
+    type: req.params.type,
     name: req.params.name,
     description: req.params.description,
     image: req.params.image,

@@ -245,6 +245,7 @@ describe('INTEGRATION #/users/:username/preferences/questions', function() {
       for(var i = 0; i < 10; ++i) {
         samples.push({
           name: i + ' big shovel',
+          type: 'item',
           categories: ['tools'],
           image: 'http://such_a_tool.com/image.jpeg',
           tags: ['shovel', 'lawn care']
