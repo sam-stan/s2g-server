@@ -55,12 +55,13 @@ var apiClient = new Buffer('officialApiClient:C0FFEE').toString('base64');
 var userString = ( argv.u || Math.random().toString().slice(-4) + '@s2g.lan:Share2Give_').split(':');
 var user = {
   email: userString[0],
-  password: userString[1]
+  password: userString[1],
+  neighborhood: '111222333444555666777888'
 };
 
 var clientCredentials = {
   user: 'officialApiClient',
-  pass: 'C0FFEE' 
+  pass: 'C0FFEE'
 };
 
 var url = argv._[0] || 'http://localhost:8000';
