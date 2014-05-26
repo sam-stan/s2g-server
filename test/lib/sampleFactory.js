@@ -39,6 +39,7 @@ exports.createOne = function (url, oauth2Token) {
   .set('Authorization', 'Bearer ' + oauth2Token)
   .send({
     name: 'lawnmower',
+    type: 'item',
     categories: [ 'tools' ],
     image: 'http://www.cpsc.gov/PageFiles/75910/08140b.jpg',
     tags: [ 'gas-powered', 'lawn']

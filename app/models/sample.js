@@ -7,6 +7,7 @@ var mongoose = require('mongoose')
 
 var Sample = new Schema({
   name: { type: String, required: true },
+  type: { type: String, required: true },
   categories: [ String ], // Store as a string until the need arises
   image: String, // Should this be a url?
   tags: [ String ]

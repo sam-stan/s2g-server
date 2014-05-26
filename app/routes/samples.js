@@ -61,6 +61,7 @@ module.exports = function(server) {
     },
     validation: {
       name: { isRequired: true, scope: 'query', description: 'Name of the Sample.'},
+      type: { isRequired: true, scope: 'query', description: 'One of "item" or "service".'},
       image: { isRequired: true, scope: 'query', description: 'Image of the Sample.'},
       categories: { isRequired: true, scope: 'query', description: 'Array of categories to which this item belongs'},
       tags: { isRequired: false, scope: 'query', description: 'Array of tags.'}
@@ -85,6 +86,7 @@ module.exports = function(server) {
     },
     validation: {
       name: { isRequired: true, scope: 'query', description: 'Name of the Sample.'},
+      type: { isRequired: true, scope: 'query', description: 'One of "item" or "service".'},
       image: { isRequired: true, scope: 'query', description: 'Image of the Sample.'},
       categories: { isRequired: true, scope: 'query', description: 'Array of categories to which this item belongs'},
       tags: { isRequired: false, scope: 'query', description: 'Array of tags.'},

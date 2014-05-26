@@ -65,6 +65,7 @@ describe( 'INTEGRATION #/samples', function() {
     var category = {
         id: objectId,
         name: 'Some Category',
+        type: 'item',
         categories: ['some category'],
         tags: ['a tag'],
         image: 'http://image.url.png'
@@ -101,6 +102,7 @@ describe( 'INTEGRATION #/samples', function() {
   describe('POST #/samples', function () {
     var category = {
         name: 'Some Category',
+        type: 'item',
         categories: ['some category'],
         tags: ['a tag'],
         image: 'http://image.url.png'

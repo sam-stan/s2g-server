@@ -108,6 +108,9 @@ module.exports = function(chai, utils) {
     expect(sample).to.have.property('id').that.is.a('string');
     expect(sample).to.have.property('name').that.is.a('string');
     expect(sample).to.have.property('image').that.is.a('string');
+    expect(sample).to.have.property('type').that.satisfy( function (t) {
+      return t === 'item' || t === 'service';
+    });
     expect(sample).to.have.property('tags').that.is.an.instanceOf(Array);
     for (var i=0; i<sample.tags.length; ++i) {
       expect(sample.tags[i]).to.be.a('string');
