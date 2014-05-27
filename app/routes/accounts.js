@@ -25,7 +25,6 @@ module.exports = function(server) {
       restifyValidation.validationPlugin({errorsAsArray: false}),
     ],
     accounts.create);
-<<<<<<< HEAD
 
       // Get a user
   server.get({

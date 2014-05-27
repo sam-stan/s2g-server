@@ -86,7 +86,7 @@ exports.put = function (req,res,next) {
       res.send(201);
       return next();
     });
-=======
+
 exports.update = function (req, res, next) {
   Account.findOne({email:req.params.username}, function (err,data) {
     if(err) {
@@ -141,6 +141,5 @@ exports.checkFbId = function (req, res, next) {
         });
       return next();
     }
->>>>>>> aae02f928b5013f26ba7050d70c017d58677980e
   });
 };
