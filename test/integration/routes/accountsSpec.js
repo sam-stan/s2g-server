@@ -7,8 +7,11 @@ var server = require('../../lib/server.js')
   , expect = chai.expect
   , logger = require('../../../app/logging').logger
   , mongoose = require('mongoose')
+  , api_assertions = require('../../lib/apiJsonChai')
   , accountFactory = require('../../lib/accountFactory.js')
   ;
+
+chai.use( api_assertions );
 
 describe( 'INTEGRATION #/accounts', function () {
   require('../../../app/models/account');
@@ -206,8 +209,53 @@ describe( 'INTEGRATION #/accounts', function () {
 
   });
 
-  describe.skip( 'PUT #/accounts/:username/facebookId', function () {
+  describe( 'PUT #/accounts/:username/facebookId', function () {
+    var account;
+    before( function (done) {
+      server.ready( function () {
+        accountFactory.createAuthenticatedAccount(url)
+        .then( function (result) {
+          account = result;
+          done();
+        });
+      });
+    });
 
+    it('should verify if the content is Json And Valid FBID', function (done) {            
+      request(url)
+      .put('/accounts')
+      .query({username:account.username})
+      .query({facebookId:'testtime2'})
+      .set('Accept', 'application/json')
+      .expect('Content-Type', 'application/json')
+      .expect(200)
+      .end(function (err, res) {
+        if (err) return done(err);
+        res.body.should.exist.and.be.an.apiResponseJSON('success');
+        res.body.data.facebookId.should.be.an.facebookId;
+        return done();
+      });
+    }); 
+
+    it('should verify if the facebookId Exist', function (done) {            
+      request(url)
+      .put('/accounts/facebookId')
+      .query({facebookId:'testtime2'})
+      .set('Accept', 'application/json')
+      .expect('Content-Type', 'application/json')
+      .expect(200)
+      .end(function (err, res) {
+        if (err) return done(err);
+        res.body.should.exist.and.be.an.apiResponseJSON('success');
+        res.body.data.facebookId.should.be.an.facebookId;
+        return done();
+      });
+    }); 
+
+    after( function (done) {
+      account.deleteAccount()
+      .then(done);
+    });
   });
 
   describe.skip( 'POST #/accounts/:username/password?reset=sms', function () {

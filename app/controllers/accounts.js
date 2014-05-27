@@ -8,6 +8,7 @@ var mongoose = require('mongoose')
   ;
 
 exports.create = function (req, res, next) {
+
   var account = new Account({
     email: req.params.email,
     password: req.params.password,
@@ -33,6 +34,7 @@ exports.create = function (req, res, next) {
   });
 };
 
+<<<<<<< HEAD
 exports.get = function(req,res,next) {
   // logger.debug('#account.get');
   Account.find( {email: req.params.username} ).exec( function (err, d) {
@@ -84,5 +86,61 @@ exports.put = function (req,res,next) {
       res.send(201);
       return next();
     });
+=======
+exports.update = function (req, res, next) {
+  Account.findOne({email:req.params.username}, function (err,data) {
+    if(err) {
+      console.log(err);
+      return next();
+    }
+    else {
+      data.facebookId = req.params.facebookId;
+      data.save( function (err) {
+      try {
+        if(err) {
+          console.log('error');
+          res.send(500,{
+            status: 'error',
+            message: err
+          });
+        }
+        else {
+          res.send({
+            status: 'success',
+            data: {
+              email: data.email,
+              facebookId: data.facebookId,
+              id: data.id
+            }
+          });
+        }
+        return next();
+      }
+      catch (error) {
+        console.log(error);
+      }
+      });
+    }
+  });   
+};
+
+exports.checkFbId = function (req, res, next) {
+  Account.findOne({facebookId:req.params.facebookId}, function (err, data) {
+    if(err) {
+      console.log(err);
+      return next();
+    }
+    else {
+      res.send({
+        status: 'success',
+        data: {
+          email: data.email,
+          facebookId: data.facebookId,
+          id: data.id
+          }
+        });
+      return next();
+    }
+>>>>>>> aae02f928b5013f26ba7050d70c017d58677980e
   });
 };

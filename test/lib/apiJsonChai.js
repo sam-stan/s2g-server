@@ -49,6 +49,11 @@ module.exports = function(chai, utils) {
     expect(filter.test(this._obj)).to.be.true;
   });
 
+  Assertion.addProperty('facebookId', function() {
+    var filter = /[a-zA-Z0-9.]*/;
+    expect(filter.test(this._obj)).to.be.true;
+  });
+  
   Assertion.addProperty('accountDetailJSON', function () {
     var detail = this._obj;
     expect(detail, 'accountDetailJSON').to.be.an('object');
@@ -120,5 +125,4 @@ module.exports = function(chai, utils) {
       expect(sample.categories[j]).to.be.a('string');
     }
   });
-
 };
