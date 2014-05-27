@@ -34,7 +34,6 @@ exports.create = function (req, res, next) {
   });
 };
 
-<<<<<<< HEAD
 exports.get = function(req,res,next) {
   // logger.debug('#account.get');
   Account.find( {email: req.params.username} ).exec( function (err, d) {
