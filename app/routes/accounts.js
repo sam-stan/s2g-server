@@ -68,42 +68,5 @@ module.exports = function(server) {
         return res.sendUnauthenticated();
       }
       return accounts.put(req, res, next);
-    });
-    
-// update fb
-  server.put({
-    url: '/accounts',
-    swagger: {
-      summary: 'Update User\'s FacebookId',
-      notes: 'The user must have been created first using a post and check if it exist',
-      nickname: 'updateUserFacebookId'
-    },
-    validation: {                
-      username: { isRequired: true, scope: 'query', description: 'Username is needed in order to update'},
-      facebookId: { isRequired: true, scope: 'query', description: 'facebookId is needed in order to update'}
-    }
-  },[ // middleware
-    restify.queryParser(),
-    restify.bodyParser(),
-    restifyValidation.validationPlugin({errorsAsArray: false})
-  ],
-  accounts.update); 
-
-// check if fb exist
-  server.put({
-    url: '/accounts/facebookId',
-    swagger: {
-      summary: 'Check If User\'s FacebookId Exist',
-      notes: 'The user must have been created first using a post',
-      nickname: 'checkUserFacebookId'
-    },
-    validation: {                
-      facebookId: { isRequired: true, scope: 'query', description: 'facebookId is needed in order to verify'}
-    }
-  },[ // middleware
-    restify.queryParser(),
-    restify.bodyParser(),
-    restifyValidation.validationPlugin({errorsAsArray: false})
-  ],
-  accounts.checkFbId); 
+    });    
 };

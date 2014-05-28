@@ -210,52 +210,61 @@ describe( 'INTEGRATION #/accounts', function () {
   });
 
   describe( 'PUT #/accounts/:username/facebookId', function () {
-    var account;
-    before( function (done) {
-      server.ready( function () {
-        accountFactory.createAuthenticatedAccount(url)
-        .then( function (result) {
-          account = result;
-          done();
-        });
-      });
-    });
-
-    it('should verify if the content is Json And Valid FBID', function (done) {            
+     var tylerDurden = {
+      firstName: 'Tyler',
+      lastName: 'Durden',
+      address: '1537 Paper Street, Bradford DE 19808',
+      avatar: 'http://www.thedentedhelmet.com/uploads/avatars/avatar14_15.gif',
+      facebookId:'tylerDurden2' 
+    };
+    
+    it('should verify if the users facebookId has been updated', function (done) {            
       request(url)
-      .put('/accounts')
-      .query({username:account.username})
-      .query({facebookId:'testtime2'})
+      .put('/accounts/' + account.username)
+      .set('Authorization', 'Bearer ' + account.oauth2.access_token)
       .set('Accept', 'application/json')
-      .expect('Content-Type', 'application/json')
-      .expect(200)
-      .end(function (err, res) {
-        if (err) return done(err);
-        res.body.should.exist.and.be.an.apiResponseJSON('success');
-        res.body.data.facebookId.should.be.an.facebookId;
-        return done();
-      });
+      .send(tylerDurden)
+      .expect(201)
+      .end(done);
     }); 
+
+  });
+
+  describe( 'GET #/accounts/:username/facebookId', function () {
+    var tylerDurden = {
+      firstName: 'Tyler',
+      lastName: 'Durden',
+      address: '1537 Paper Street, Bradford DE 19808',
+      avatar: 'http://www.thedentedhelmet.com/uploads/avatars/avatar14_15.gif',
+      facebookId:'tylerDurden2' 
+    };
+    
+    before(function (done) {
+      request(url)
+      .put('/accounts/' + account.username )
+      .set('Authorization', 'Bearer ' + account.oauth2.access_token)
+      .set('Accept', 'application/json')
+      .set('Content-Type', 'application/json')
+      .send( tylerDurden)
+      .expect(201)
+      .end(done);
+    });    
 
     it('should verify if the facebookId Exist', function (done) {            
       request(url)
-      .put('/accounts/facebookId')
-      .query({facebookId:'testtime2'})
+      .get('/accounts/' + account.username)
+      .set('Authorization', 'Bearer ' + account.oauth2.access_token)
       .set('Accept', 'application/json')
       .expect('Content-Type', 'application/json')
       .expect(200)
       .end(function (err, res) {
-        if (err) return done(err);
+      if (err) return done(err);
         res.body.should.exist.and.be.an.apiResponseJSON('success');
         res.body.data.facebookId.should.be.an.facebookId;
         return done();
-      });
-    }); 
+     });
+    });     
 
-    after( function (done) {
-      account.deleteAccount()
-      .then(done);
-    });
   });
 
   describe.skip( 'POST #/accounts/:username/password?reset=sms', function () {

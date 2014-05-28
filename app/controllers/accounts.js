@@ -53,7 +53,8 @@ exports.get = function(req,res,next) {
         avatar: data.avatar,
         email: data.email,
         firstName: data.firstName,
-        lastName: data.lastName
+        lastName: data.lastName,
+	facebookId: data.facebookId,
       }
     });
     next();
@@ -65,12 +66,23 @@ exports.put = function (req,res,next) {
     checkAccountError(err, d, req.params.email, res, next);    
 
     // logger.debug('#account.put');
-    var update = {
-      firstName: req.params.firstName,
-      lastName: req.params.lastName,
-      address: req.params.address,
-      avatar: req.params.avatar
-    };
+    if(req.params.facebookId) {
+      var update = {
+        firstName: req.params.firstName,
+        lastName: req.params.lastName,
+        address: req.params.address,
+        avatar: req.params.avatar,
+        facebookId: req.params.facebookId
+      };
+    }
+    else{
+      var update = {
+        firstName: req.params.firstName,
+        lastName: req.params.lastName,
+        address: req.params.address,
+        avatar: req.params.avatar
+      };
+    }    
     
     Account.update( {email: req.params.username}, update, {upsert: true},
       function (err) {
@@ -85,60 +97,5 @@ exports.put = function (req,res,next) {
       res.send(201);
       return next();
     });
-
-exports.update = function (req, res, next) {
-  Account.findOne({email:req.params.username}, function (err,data) {
-    if(err) {
-      console.log(err);
-      return next();
-    }
-    else {
-      data.facebookId = req.params.facebookId;
-      data.save( function (err) {
-      try {
-        if(err) {
-          console.log('error');
-          res.send(500,{
-            status: 'error',
-            message: err
-          });
-        }
-        else {
-          res.send({
-            status: 'success',
-            data: {
-              email: data.email,
-              facebookId: data.facebookId,
-              id: data.id
-            }
-          });
-        }
-        return next();
-      }
-      catch (error) {
-        console.log(error);
-      }
-      });
-    }
-  });   
-};
-
-exports.checkFbId = function (req, res, next) {
-  Account.findOne({facebookId:req.params.facebookId}, function (err, data) {
-    if(err) {
-      console.log(err);
-      return next();
-    }
-    else {
-      res.send({
-        status: 'success',
-        data: {
-          email: data.email,
-          facebookId: data.facebookId,
-          id: data.id
-          }
-        });
-      return next();
-    }
   });
 };
